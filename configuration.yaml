@@ -1,0 +1,63 @@
+
+# Configure a default setup of Home Assistant (frontend, api, etc)
+default_config:
+
+# Uncomment this if you are using SSL/TLS, running in Docker container, etc.
+http:
+  ssl_certificate: !secret SSL_CERTIFICATE_PATH
+  ssl_key: !secret SSL_KEY_PATH
+  base_url: !secret SERVER_BASE_URL
+
+# Text to speech
+tts:
+  - platform: google_translate
+
+
+dyson:
+  username: !secret DYSON_USERNAME
+  password: !secret DYSON_PASSWORD
+  language: !secret DYSON_COUNTRY
+
+panel_iframe:
+  ide:
+    title: IDE
+    icon: mdi:code-braces
+    url: !secret CLOUD_9_URL
+    
+homekit:
+  filter:
+    include_entities:
+      - sensor.bedroom_aqi_pm25
+      - sensor.bedroom_dust
+      - sensor.bedroom_humidity
+      - sensor.bedroom_temperature
+    include_domains:
+      - light
+      - sensor
+      - climate
+      - fan
+    exclude_entities:
+      - light.bedroom_bed
+      - light.small
+      - light.living_room_table
+      - device_tracker.nils_iphone_xs
+      - person.nil
+#      - sensor.bedroom_temperature
+person:
+discovery:
+  ignore:
+    - philips_hue
+ios:
+hue:
+  bridges:
+    - host: !secret HUE_BRIDGE_IP
+      allow_hue_groups: false
+
+homeassistant:
+  name: Home
+  customize: !include customize.yaml
+
+
+group: !include groups.yaml
+automation: !include automations.yaml
+script: !include scripts.yaml

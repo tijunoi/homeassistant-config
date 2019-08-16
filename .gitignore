@@ -11,6 +11,17 @@
 .cloud
 .google.token
 
+#Ignore homekit state
+.homekit.state
+
+#Ignore logs, dbs and bkps
+*.log
+*.db
+*.bkp
+
+#Ignore tts folder that stores google translate mp3s
+tts
+
 # Ensure these YAML files are ignored, otherwise your secret data/credentials will leak.
 ip_bans.yaml
 secrets.yaml

@@ -12,12 +12,12 @@
     entity_id: alarm_control_panel.home_alarm
 
 - alias: 'Send notification when alarm triggered'
-    trigger:
-      - platform: state
-        entity_id: alarm_control_panel.home_alarm
-        to: 'triggered'
-    action:
-      - service: tts.google_translate_say
-        entity_id: media_player.bedroom_speaker
-        data:
-          message: "ALARM! The alarm has been triggered"
+  trigger:
+    - platform: state
+      entity_id: alarm_control_panel.home_alarm
+      to: 'triggered'
+  action:
+    - service: tts.google_translate_say
+      entity_id: media_player.bedroom_speaker
+      data:
+        message: "ALARM! The alarm has been triggered"

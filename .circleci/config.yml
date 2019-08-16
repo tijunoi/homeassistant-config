@@ -7,14 +7,14 @@ jobs:
     steps:
       - checkout
       - run:
-        name: Check config
-        command: |
-          touch fake.pem
-          mv circleci_secrets.yaml secrets.yaml
-          python3.7 -m venv .
-          source bin/activate
-          pip3 install --pre --upgrade homeassistant
-          hass -c . --script check_config --info all
+          name: Check config
+          command: |
+            touch fake.pem
+            mv circleci_secrets.yaml secrets.yaml
+            python3.7 -m venv .
+            source bin/activate
+            pip3 install --pre --upgrade homeassistant
+            hass -c . --script check_config --info all
   deploy:
     machine:
       enabled: true
@@ -38,7 +38,3 @@ workflows:
           filters:
             branches:
               only: master
-            tags:
-              # Don't deploy if a commit has tag attached
-              ignore:
-                /skip-deploy/

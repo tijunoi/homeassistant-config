@@ -36,6 +36,7 @@ homekit:
       - sensor
       - climate
       - fan
+      - alarm_control_panel
     exclude_entities:
       - light.bedroom_bed
       - light.small

@@ -17,10 +17,9 @@ dyson:
   username: !secret DYSON_USERNAME
   password: !secret DYSON_PASSWORD
   language: !secret DYSON_COUNTRY
-	devices:
-	  - device_id: !secret DYSON_DEVICE_ID
-		  device_ip: !secret DYSON_DEVICE_IP
-		
+  devices:
+    - device_id: !secret DYSON_DEVICE_ID
+      device_ip: !secret DYSON_DEVICE_IP
 
 panel_iframe:
   ide:

@@ -10,8 +10,8 @@ from homeassistant.components.climate.const import (
     CURRENT_HVAC_COOL,
     CURRENT_HVAC_HEAT,
     CURRENT_HVAC_IDLE,
-    HVAC_MODE_COOL,
     HVAC_MODE_HEAT,
+    HVAC_MODE_OFF,
     SUPPORT_FAN_MODE,
     FAN_FOCUS,
     FAN_DIFFUSE,
@@ -24,7 +24,7 @@ from . import DYSON_DEVICES
 _LOGGER = logging.getLogger(__name__)
 
 SUPPORT_FAN = [FAN_FOCUS, FAN_DIFFUSE]
-SUPPORT_HVAG = [HVAC_MODE_COOL, HVAC_MODE_HEAT]
+SUPPORT_HVAG = [HVAC_MODE_OFF, HVAC_MODE_HEAT]
 SUPPORT_FLAGS = SUPPORT_TARGET_TEMPERATURE | SUPPORT_FAN_MODE
 
 
@@ -124,7 +124,7 @@ class DysonPureHotCoolLinkDevice(ClimateDevice):
         """
         if self._device.state.heat_mode == HeatMode.HEAT_ON.value:
             return HVAC_MODE_HEAT
-        return HVAC_MODE_COOL
+        return HVAC_MODE_OFF
 
     @property
     def hvac_modes(self):
@@ -184,8 +184,10 @@ class DysonPureHotCoolLinkDevice(ClimateDevice):
         """Set new target hvac mode."""
         _LOGGER.debug("Set %s heat mode %s", self.name, hvac_mode)
         if hvac_mode == HVAC_MODE_HEAT:
+            # todo: check if necessary to switch on fan
             self._device.set_configuration(heat_mode=HeatMode.HEAT_ON)
-        elif hvac_mode == HVAC_MODE_COOL:
+        elif hvac_mode == HVAC_MODE_OFF:
+            # todo: check if necessary to turn off fan
             self._device.set_configuration(heat_mode=HeatMode.HEAT_OFF)
 
     @property

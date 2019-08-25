@@ -21,12 +21,6 @@ better_dyson:
   devices:
     - device_id: !secret DYSON_DEVICE_ID
       device_ip: !secret DYSON_DEVICE_IP
-
-panel_iframe:
-  ide:
-    title: IDE
-    icon: mdi:code-braces
-    url: !secret CLOUD_9_URL
     
 homekit:
   filter:

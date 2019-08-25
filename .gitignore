@@ -27,3 +27,7 @@ ip_bans.yaml
 secrets.yaml
 known_devices.yaml
 .ios.conf
+
+#IDE settings
+.vscode
+.idea/*

@@ -13,8 +13,8 @@ tts:
   - platform: google_translate
     base_url: !secret TTS_BASE_URL
 
-
-dyson:
+# Use custom dyson component
+better_dyson:
   username: !secret DYSON_USERNAME
   password: !secret DYSON_PASSWORD
   language: !secret DYSON_COUNTRY
@@ -55,6 +55,7 @@ person:
 discovery:
   ignore:
     - philips_hue
+    - xiaomi_gw
 ios:
 hue:
   bridges:

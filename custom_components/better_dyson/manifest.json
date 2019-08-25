@@ -3,7 +3,7 @@
   "name": "Dyson",
   "documentation": "https://www.home-assistant.io/components/dyson",
   "requirements": [
-    "git+git://github.com/tijunoi/libpurecool.git@master#egg=libdyson"
+    "https://github.com/tijunoi/libpurecool/archive/master.zip#libdyson==0.6.0"
   ],
   "dependencies": [],
   "codeowners": []

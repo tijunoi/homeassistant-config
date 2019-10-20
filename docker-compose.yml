@@ -1,4 +1,4 @@
-version: '3.3'
+version: '3'
 services:
     homeassistant:
         container_name: home-assistant
@@ -7,7 +7,5 @@ services:
         volumes:
             - '/home/homeassistant/.homeassistant:/config'
         image: 'homeassistant/raspberrypi3-homeassistant:stable'
-        network_mode: "host"
+        network_mode: host
         restart: always
-        ports:
-          - 8123:8123

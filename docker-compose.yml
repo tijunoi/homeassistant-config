@@ -10,4 +10,4 @@ services:
         network_mode: "host"
         restart: always
         ports:
-          8123:8123
+          - 8123:8123

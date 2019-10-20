@@ -25,7 +25,7 @@ jobs:
       - run:
           name: Deploy Over SSH
           command: |
-            ssh ${SSH_USER}@${SSH_HOST} "cd /home/homeassistant/.homeassistant && sudo -u homeassistant git pull && sudo systemctl restart home-assistant@homeassistant.service"
+            ssh ${SSH_USER}@${SSH_HOST} "cd /home/homeassistant/.homeassistant && sudo -u homeassistant git pull && sudo -u homeassistant docker-compose up"
 
 workflows:
   version: 2

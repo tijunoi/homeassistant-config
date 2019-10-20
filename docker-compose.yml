@@ -1,0 +1,11 @@
+version: '3.3'
+services:
+    homeassistant:
+        container_name: home-assistant
+        environment:
+            - TZ=Europe/Madrid
+        volumes:
+            - '/home/homeassistant/.homeassistant:/config'
+        image: 'homeassistant/raspberrypi3-homeassistant:stable'
+        network_mode: "host"
+        restart: always

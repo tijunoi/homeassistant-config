@@ -35,6 +35,7 @@ homekit:
       - climate
       - fan
       - alarm_control_panel
+      - media_player
     exclude_entities:
       - light.bedroom_bed
       - light.small
@@ -55,6 +56,14 @@ hue:
   bridges:
     - host: !secret HUE_BRIDGE_IP
       allow_hue_groups: false
+
+media_player:
+  - platform: philips_android_tv
+    name: PhilipsTV
+    host: !secret PHILIPS_TV_HOST
+    mac: !secret PHILIPS_TV_MAC
+    username: !secret PHILIPS_TV_USERNAME
+    password: !secret PHILIPS_TV_PASSWORD
 
 homeassistant:
   name: Home

@@ -1,0 +1,11 @@
+# Describes the format for available Android TV and Fire TV services
+
+adb_command:
+  description: Send an remote key command to an Philips TV.
+  fields:
+    entity_id:
+      description: Name(s) of Philips TV entities.
+      example: 'media_player.philips_tv'
+    command:
+      description: Key command.
+      example: 'Home'

@@ -465,7 +465,7 @@ RESTART_EXIT_CODE = 100
 UNIT_NOT_RECOGNIZED_TEMPLATE: str = "{} is not a recognized {} unit."
 
 LENGTH: str = "length"
-MAS: str = "mass"
+MASS: str = "mass"
 PRESSURE: str = "pressure"
 VOLUME: str = "volume"
 TEMPERATURE: str = "temperature"

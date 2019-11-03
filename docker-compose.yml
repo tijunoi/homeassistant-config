@@ -7,6 +7,8 @@ services:
         volumes:
             - '/home/homeassistant/.homeassistant:/config'
             - '/home/homeassistant/dehydrated:/srv/dehydrated'
-        image: 'homeassistant/raspberrypi3-homeassistant:stable'
+        build:
+            dockerfile: ./Dockerfile
+            context: patch_homeassistant/
         network_mode: host
         restart: always

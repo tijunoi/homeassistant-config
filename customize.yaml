@@ -1,2 +1,4 @@
 sensor.bedroom_humidity:
   device_class: humidity
+media_player.philipstv:
+  device_class: tv

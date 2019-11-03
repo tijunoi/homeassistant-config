@@ -341,7 +341,9 @@ async def async_setup(hass, config):
     component.async_register_entity_service(
         SERVICE_MEDIA_HOMEKIT_SEND_REMOTE_KEY,
         MEDIA_PLAYER_SEND_REMOTE_KEY_SCHEMA,
-        "async_homekit_send_remote_key",
+        lambda entity, call: entity.async_homekit_send_remote_key(
+            key=call.data[ATTR_COMMAND]
+        ),
         [SUPPORT_HOMEKIT_REMOTE],
     )
 

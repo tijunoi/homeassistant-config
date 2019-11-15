@@ -17,9 +17,13 @@ from homeassistant.components.climate.const import (
     FAN_DIFFUSE,
     SUPPORT_TARGET_TEMPERATURE,
 )
-from homeassistant.const import ATTR_TEMPERATURE, TEMP_CELSIUS
+from homeassistant.const import ATTR_TEMPERATURE, TEMP_CELSIUS, ATTR_ENTITY_ID
+from homeassistant.helpers.config_validation import (
+    ENTITY_SERVICE_SCHEMA,
+)
 
 from . import DYSON_DEVICES
+DYSON_DOMAIN = "dyson"
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -27,20 +31,53 @@ SUPPORT_FAN = [FAN_FOCUS, FAN_DIFFUSE]
 SUPPORT_HVAG = [HVAC_MODE_OFF, HVAC_MODE_HEAT]
 SUPPORT_FLAGS = SUPPORT_TARGET_TEMPERATURE | SUPPORT_FAN_MODE
 
+DYSON_CLIMATE_DEVICES = "dyson_climate_devices"
+
+SERVICE_RECONNECT = 'reconnect'
+
+DYSON_RECONNECT_SCHEMA = ENTITY_SERVICE_SCHEMA
+
 
 def setup_platform(hass, config, add_devices, discovery_info=None):
+
+    from libdyson.dyson_pure_hotcool_link import DysonPureHotCoolLink
+
     """Set up the Dyson fan components."""
     if discovery_info is None:
         return
 
+    has_hot_devices = False
+    device_serials = [device.serial for device in hass.data[DYSON_CLIMATE_DEVICES]]
+    if DYSON_CLIMATE_DEVICES not in hass.data:
+        hass.data[DYSON_CLIMATE_DEVICES] = []
+        for device in hass.data[DYSON_DEVICES]:
+            if device.serial not in device_serials:
+                if isinstance(device, DysonPureHotCoolLink):
+                    has_hot_devices = True
+                    dyson_entity = DysonPureHotCoolLinkDevice(device)
+                    hass.data[DYSON_CLIMATE_DEVICES].append(dyson_entity)
+
     # Get Dyson Devices from parent component.
-    add_devices(
-        [
-            DysonPureHotCoolLinkDevice(device)
-            for device in hass.data[DYSON_DEVICES]
-            if isinstance(device, DysonPureHotCoolLink)
-        ]
-    )
+    add_devices(hass.data[DYSON_CLIMATE_DEVICES])
+
+    def service_handle(service):
+        entity_id = service.data[ATTR_ENTITY_ID]
+        climate_device = next(
+            (climate for climate in hass.data[DYSON_CLIMATE_DEVICES] if climate.entity_id == entity_id)
+        )
+        if climate_device is None:
+            _LOGGER.warning("Unable to find Dyson heat fan device %s", str(entity_id))
+            return
+        if service.service == SERVICE_RECONNECT:
+            climate_device.reconnect()
+
+    if has_hot_devices:
+        hass.services.register(
+            DYSON_DOMAIN,
+            SERVICE_RECONNECT,
+            service_handle,
+            schema=DYSON_RECONNECT_SCHEMA,
+        )
 
 
 class DysonPureHotCoolLinkDevice(ClimateDevice):
@@ -67,6 +104,22 @@ class DysonPureHotCoolLinkDevice(ClimateDevice):
     def on_device_disconnect(self):
         """When device is disconnected, update HA state"""
         self.schedule_update_ha_state()
+
+    def reconnect(self):
+        _LOGGER.debug("Reconnecting to device %s", self.name)
+        try:
+            connected = self._device.connect(self._device.network_device.address)
+            self.schedule_update_ha_state()
+            if connected:
+                _LOGGER.info("Reconnected to device %s", self.name)
+            else:
+                _LOGGER.warning("Unable to connect to device %s", self._device)
+        except OSError as ose:
+            _LOGGER.error(
+                "Unable to connect to device %s: %s",
+                str(self._device.network_device),
+                str(ose),
+            )
 
     @property
     def available(self) -> bool:

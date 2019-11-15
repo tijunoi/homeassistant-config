@@ -21,3 +21,12 @@
       entity_id: media_player.bedroom_speaker
       data:
         message: "ALARM! The alarm has been triggered"
+
+- alias: 'Try reconnect to Dyson fan if unavailable for 3 hours'
+  trigger:
+    - platform: template
+      value_template: "{{ is_state_attr('climate.bedroom', 'available', false) }}"
+      for: "03:00:00"
+  action:
+    service: dyson.reconnect
+    entity_id: climate.bedroom

@@ -46,16 +46,18 @@ def setup_platform(hass, config, add_devices, discovery_info=None):
     if discovery_info is None:
         return
 
-    has_hot_devices = False
-    device_serials = [device.serial for device in hass.data[DYSON_CLIMATE_DEVICES]]
+    _LOGGER.debug("Creating new Dyson heater fans")
     if DYSON_CLIMATE_DEVICES not in hass.data:
         hass.data[DYSON_CLIMATE_DEVICES] = []
-        for device in hass.data[DYSON_DEVICES]:
-            if device.serial not in device_serials:
-                if isinstance(device, DysonPureHotCoolLink):
-                    has_hot_devices = True
-                    dyson_entity = DysonPureHotCoolLinkDevice(device)
-                    hass.data[DYSON_CLIMATE_DEVICES].append(dyson_entity)
+
+    has_hot_devices = False
+    device_serials = [device.serial for device in hass.data[DYSON_CLIMATE_DEVICES]]
+    for device in hass.data[DYSON_DEVICES]:
+        if device.serial not in device_serials:
+            if isinstance(device, DysonPureHotCoolLink):
+                has_hot_devices = True
+                dyson_entity = DysonPureHotCoolLinkDevice(device)
+                hass.data[DYSON_CLIMATE_DEVICES].append(dyson_entity)
 
     # Get Dyson Devices from parent component.
     add_devices(hass.data[DYSON_CLIMATE_DEVICES])

@@ -1,9 +1,9 @@
 {
-  "domain": "dyson",
+  "domain": "better_dyson",
   "name": "Dyson",
   "documentation": "https://www.home-assistant.io/components/dyson",
   "requirements": [
-    "https://github.com/tijunoi/libpurecool/archive/master.zip#libdyson==0.6.0"
+    "https://github.com/tijunoi/libpurecool/archive/master.zip#libdyson==0.6.1"
   ],
   "dependencies": [],
   "codeowners": []

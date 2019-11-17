@@ -1,4 +1,5 @@
 # Example .gitignore file for your config dir.
+.HA_VERSION
 
 # You can whitelist files/folders with !, these will not be ignored.
 !*.yaml
@@ -31,3 +32,6 @@ known_devices.yaml
 #IDE settings
 .vscode
 .idea/*
+
+#python
+**/__pycache__/

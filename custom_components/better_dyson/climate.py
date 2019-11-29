@@ -23,7 +23,7 @@ from homeassistant.helpers.config_validation import (
 )
 
 from . import DYSON_DEVICES
-DYSON_DOMAIN = "dyson"
+DYSON_DOMAIN = "better_dyson"
 
 _LOGGER = logging.getLogger(__name__)
 

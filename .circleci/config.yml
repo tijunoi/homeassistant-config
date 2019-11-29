@@ -1,8 +1,9 @@
 version: 2
 jobs:
   build:
-    docker:
-      - image: circleci/python:3.7.3
+    machine: true
+#    docker:
+#      - image: circleci/python:3.7.3
     working_directory: ~/repo
     steps:
       - checkout
@@ -11,10 +12,7 @@ jobs:
           command: |
             touch fake.pem
             mv circleci_secrets.yaml secrets.yaml
-            python3.7 -m venv .
-            source bin/activate
-            pip3 install --pre --upgrade homeassistant
-            hass -c . --script check_config --info all
+            docker-compose -f docker-compose.check.yml up --build --force-recreate
   deploy:
     machine:
       enabled: true

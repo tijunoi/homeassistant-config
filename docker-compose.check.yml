@@ -1,0 +1,14 @@
+version: '3'
+services:
+    homeassistant:
+        container_name: home-assistant
+        environment:
+            - TZ=Europe/Madrid
+        volumes:
+            - './:/config'
+        build:
+            dockerfile: ./Dockerfile
+            context: patch_homeassistant/
+            args:
+              image: homeassistant/home-assistant:0.101.2
+        command: python -m homeassistant --script check_config --config /config

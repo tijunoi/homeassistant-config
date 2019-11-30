@@ -11,4 +11,4 @@ services:
             context: patch_homeassistant/
             args:
               IMAGE: homeassistant/home-assistant:0.101.2
-        command: python -m homeassistant --script check_config --config /config
+        command: python -m homeassistant --script check_config --config /config --info all

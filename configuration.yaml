@@ -73,7 +73,7 @@ alarm_control_panel:
   - platform: manual
     name: Home Alarm
     code: !secret ALARM_CODE
-    code_arm_required: false
+    code_arm_requir: false
     pending_time: 30
     delay_time: 20
     trigger_time: 4

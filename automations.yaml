@@ -39,6 +39,7 @@
     data:
       message: "Home Assistant has been started"
       title: "Home Assistant started"
-      push:
-        thread-id: "homeassistant-server-status"
+      data:
+        push:
+          thread-id: "homeassistant-server-status"
   

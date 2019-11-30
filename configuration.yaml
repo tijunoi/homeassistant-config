@@ -21,7 +21,20 @@ better_dyson:
   devices:
     - device_id: !secret DYSON_DEVICE_ID
       device_ip: !secret DYSON_DEVICE_IP
-    
+
+#Nest web api component (no WwN)
+badnest:
+  email: !secret NEST_EMAIL
+  password: !secret NEST_PASSWORD
+  region: eu
+
+climate:
+  - platform: badnest
+    scan_interval: 10
+
+sensor:
+  - platform: badnest
+
 homekit:
   filter:
     include_entities:

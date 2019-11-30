@@ -12,7 +12,7 @@ jobs:
           command: |
             touch fake.pem
             mv circleci_secrets.yaml secrets.yaml
-            docker-compose -f docker-compose.check.yml up --build --force-recreate
+            docker-compose -f docker-compose.check.yml up --build --force-recreate --exit-code-from homeassistant
   deploy:
     machine:
       enabled: true

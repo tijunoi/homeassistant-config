@@ -50,6 +50,7 @@ homekit:
       - alarm_control_panel
       - media_player
     exclude_entities:
+      - light.living_room_sofa
       - light.bedroom_bed
       - light.small
       - light.living_room_table

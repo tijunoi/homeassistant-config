@@ -30,3 +30,15 @@
   action:
     service: dyson.reconnect
     entity_id: climate.bedroom
+- alias: 'Notify Nil when Home Assistant is started (usually from a deploy restart)'
+  trigger:
+    platform: homeassistant
+    event: start
+  action:
+    service: notify.mobile_app_nils_iphone_xs
+    data:
+      message: "Home Assistant has been started"
+      title: "Home Assistant started"
+      push:
+        thread-id: "homeassistant-server-status"
+  

@@ -42,4 +42,40 @@
       data:
         push:
           thread-id: "homeassistant-server-status"
-  
+
+# Christmas lights automations
+- alias: 'Switch on the balcony christmas lights at night'
+  trigger:
+    platform: time_pattern
+    seconds: "/30"
+  condition:
+    condition: and
+    conditions:
+      - condition: time
+        after: '18:00:00'
+        before: '07:30:00'
+      - condition: state
+        entity_id: light.christmas_balcony
+        state: 'off'
+  action:
+    service: light.turn_on
+    data:
+      entity_id: light.christmas_balcony
+
+- alias: 'Switch off the balcony christmas lights by day'
+  trigger:
+    platform: time_pattern
+    seconds: "/30"
+  condition:
+    condition: and
+    conditions:
+      - condition: time
+        before: '18:00:00'
+        after: '07:30:00'
+      - condition: state
+        entity_id: light.christmas_balcony
+        state: 'on'
+  action:
+    service: light.turn_off
+    data:
+      entity_id: light.christmas_balcony

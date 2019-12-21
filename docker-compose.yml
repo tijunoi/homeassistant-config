@@ -14,9 +14,11 @@ services:
         restart: always
     google-assistant-relay:
         container_name: assistant_relay
-        image: 'apipa169/assistant-relay:latest'
+        build:
+            dockerfile: ./assistant_relay/Dockerfile
         volumes:
             - '/home/homeassistant/.homeassistant/assistant_relay/config.json:/assistant_relay/bin/config.json:rw'
             - '/home/homeassistant/.homeassistant/assistant_relay/audio-responses:/assistant_relay/bin/audio-responses:rw'
         ports:
             - '3000:3000'
+        restart: always

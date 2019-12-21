@@ -43,6 +43,26 @@ notify:
       - service: mobile_app_nils_iphone_xs
       - service: mobile_app_steve_s_iphonex
 
+# Google Assistant relay commands
+rest_command:
+  assistant_broadcast:
+    url: http://localhost:3000/assistant
+    method: POST
+    content_type: 'application/json'
+    payload: '{"command":"{{ command }}", "user":"username", "broadcast":true}'
+    
+  assistant_converse:
+    url: http://localhost:3000/assistant
+    method: POST
+    content_type: 'application/json'
+    payload: '{"command":"{{ command }}", "user":"username", "converse":true}'
+
+  assistant_relay:
+    url: http://localhost:3000/assistant
+    method: POST
+    content_type: 'application/json'
+    payload: '{"command":"{{ command }}", "user":"username"}'
+
 homekit:
   filter:
     include_entities:

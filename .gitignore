@@ -24,7 +24,8 @@
 tts
 
 #Ignore config folder of assistant_relay server
-assistant_relay
+assistant_relay/*
+!assistant_relay/Dockerfile
 
 # Ensure these YAML files are ignored, otherwise your secret data/credentials will leak.
 ip_bans.yaml

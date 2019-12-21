@@ -30,6 +30,7 @@
   action:
     service: dyson.reconnect
     entity_id: climate.bedroom
+
 - alias: 'Notify Nil when Home Assistant is started (usually from a deploy restart)'
   trigger:
     platform: homeassistant
@@ -42,6 +43,21 @@
       data:
         push:
           thread-id: "homeassistant-server-status"
+
+- alias: "Notify phones when iPad battery is running low"
+  trigger:
+    platform: numeric_state
+    entity_id: sensor.ipad_battery_level
+    below: 10
+  condition:
+  action:
+    service: notify.iphones
+    data:
+      message: "Charge iPad soon to keep Homekit hub running"
+      title: "iPad battery low ({{ states('sensor.ipad_battery_level') }}%)"
+      data:
+        push:
+          thread-id: "ipad-battery-status"
 
 # Christmas lights automations
 - alias: 'Switch on the balcony christmas lights at night'

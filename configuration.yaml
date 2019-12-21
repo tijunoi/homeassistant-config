@@ -35,6 +35,14 @@ climate:
 sensor:
   - platform: badnest
 
+# Notification groups
+notify:
+  - name: iphones
+    platform: group
+    services:
+      - service: mobile_app_nils_iphone_xs
+      - service: mobile_app_steve_s_iphonex
+
 homekit:
   filter:
     include_entities:
@@ -65,7 +73,6 @@ discovery:
   ignore:
     - philips_hue
     - xiaomi_gw
-ios:
 hue:
   bridges:
     - host: !secret HUE_BRIDGE_IP

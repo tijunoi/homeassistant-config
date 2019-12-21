@@ -52,7 +52,7 @@
     condition: and
     conditions:
       - condition: time
-        after: '18:00:00'
+        after: '17:30:00'
         before: '07:30:00'
       - condition: state
         entity_id: light.christmas_balcony
@@ -70,7 +70,7 @@
     condition: and
     conditions:
       - condition: time
-        before: '18:00:00'
+        before: '17:30:00'
         after: '07:30:00'
       - condition: state
         entity_id: light.christmas_balcony

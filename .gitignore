@@ -35,3 +35,9 @@ known_devices.yaml
 
 #python
 **/__pycache__/
+
+### macOS ###
+# General
+.DS_Store
+.AppleDouble
+.LSOverride

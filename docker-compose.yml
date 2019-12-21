@@ -16,6 +16,7 @@ services:
         container_name: assistant_relay
         build:
             dockerfile: ./assistant_relay/Dockerfile
+            context: ./
         volumes:
             - '/home/homeassistant/.homeassistant/assistant_relay/config.json:/assistant_relay/bin/config.json:rw'
             - '/home/homeassistant/.homeassistant/assistant_relay/audio-responses:/assistant_relay/bin/audio-responses:rw'

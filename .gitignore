@@ -23,6 +23,9 @@
 #Ignore tts folder that stores google translate mp3s
 tts
 
+#Ignore config folder of assistant_relay server
+assistant_relay
+
 # Ensure these YAML files are ignored, otherwise your secret data/credentials will leak.
 ip_bans.yaml
 secrets.yaml

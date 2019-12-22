@@ -14,4 +14,4 @@ RUN wget https://github.com/greghesp/assistant-relay/releases/download/v3.1.3/re
 && rm release.zip \
 && npm i
 
-CMD ["npm start"]
+CMD ["npm run start"]

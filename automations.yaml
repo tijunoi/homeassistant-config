@@ -49,15 +49,20 @@
     platform: numeric_state
     entity_id: sensor.ipad_battery_level
     below: 10
-  condition:
   action:
-    service: notify.iphones
-    data:
-      message: "Charge iPad soon to keep Homekit hub running"
-      title: "iPad battery low ({{ states('sensor.ipad_battery_level') }}%)"
+    - service: notify.iphones
       data:
-        push:
-          thread-id: "ipad-battery-status"
+        message: "Charge iPad soon to keep Homekit hub running"
+        title: "iPad battery low ({{ states('sensor.ipad_battery_level') }}%)"
+        data:
+          push:
+            thread-id: "ipad-battery-status"
+    - condition: state
+      entity_id: binary_sensor.someone_home
+      state: 'home'
+    - service: rest_command.assistant_broadcast
+      data:
+        command: "iPad battery low. Charge iPad soon to keep Homekit hub running"
 
 # Christmas lights automations
 - alias: 'Switch on the balcony christmas lights at night'

@@ -59,7 +59,7 @@
             thread-id: "ipad-battery-status"
     - condition: state
       entity_id: binary_sensor.someone_home
-      state: 'home'
+      state: 'on'
     - service: rest_command.assistant_broadcast
       data:
         command: "iPad battery low. Charge iPad soon to keep Homekit hub running"

@@ -93,6 +93,7 @@ homekit:
 
 # Sensor to detect if anyone is at home
 person:
+binary_sensor:
 - platform: template
   sensors:
     someone_home:

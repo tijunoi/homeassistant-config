@@ -86,10 +86,12 @@ homekit:
       - light.living_room_table
       - device_tracker.nils_iphone_xs
       - person.nil
+      - person.steve
+      - alarm_control_panel.home_alarm
 #      - sensor.bedroom_temperature
-  entity_config:
-    alarm_control_panel.home_alarm:
-      code: !secret ALARM_CODE
+#    entity_config:
+#    alarm_control_panel.home_alarm:
+#      code: !secret ALARM_CODE
 
 # Sensor to detect if anyone is at home
 person:

@@ -37,10 +37,11 @@ from homeassistant.const import (
     STATE_IDLE,
     STATE_OFF,
     STATE_PLAYING,
-    ATTR_COMMAND)
+    ATTR_COMMAND,
+)
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 import homeassistant.helpers.config_validation as cv
-from homeassistant.helpers.config_validation import (  # noqa
+from homeassistant.helpers.config_validation import (  # noqa: F401
     ENTITY_SERVICE_SCHEMA,
     PLATFORM_SCHEMA,
     PLATFORM_SCHEMA_BASE,
@@ -99,7 +100,6 @@ from .const import (
     SUPPORT_VOLUME_STEP,
     SUPPORT_HOMEKIT_REMOTE,
 )
-
 
 # mypy: allow-untyped-defs, no-check-untyped-defs
 
@@ -851,6 +851,24 @@ class MediaPlayerDevice(Entity):
             return None
 
         return ENTITY_IMAGE_URL.format(self.entity_id, self.access_token, image_hash)
+
+    @property
+    def capability_attributes(self):
+        """Return capabilitiy attributes."""
+        supported_features = self.supported_features or 0
+        data = {}
+
+        if supported_features & SUPPORT_SELECT_SOURCE:
+            source_list = self.source_list
+            if source_list:
+                data[ATTR_INPUT_SOURCE_LIST] = source_list
+
+        if supported_features & SUPPORT_SELECT_SOUND_MODE:
+            sound_mode_list = self.sound_mode_list
+            if sound_mode_list:
+                data[ATTR_SOUND_MODE_LIST] = sound_mode_list
+
+        return data
 
     @property
     def state_attributes(self):

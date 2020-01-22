@@ -34,7 +34,9 @@ from homeassistant.const import (
     STATE_PLAYING,
     STATE_PAUSED,
     STATE_UNKNOWN,
-    ATTR_COMMAND, SERVICE_MEDIA_HOMEKIT_SEND_REMOTE_KEY)
+    ATTR_COMMAND,
+    SERVICE_MEDIA_HOMEKIT_SEND_REMOTE_KEY,
+)
 
 from . import TYPES
 from .accessories import HomeAccessory
@@ -490,7 +492,7 @@ class TelevisionMediaPlayer(HomeAccessory):
                     self.char_input_source.set_value(index)
                 else:
                     _LOGGER.warning(
-                        "%s: Sources out of sync. " "Restart HomeAssistant",
+                        "%s: Sources out of sync. Restart Home Assistant",
                         self.entity_id,
                     )
                     self.char_input_source.set_value(0)

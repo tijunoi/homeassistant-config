@@ -19,7 +19,7 @@ from homeassistant.components.climate.const import (
 )
 from homeassistant.const import ATTR_TEMPERATURE, TEMP_CELSIUS, ATTR_ENTITY_ID
 from homeassistant.helpers.config_validation import (
-    ENTITY_SERVICE_SCHEMA,
+    make_entity_service_schema,
 )
 
 from . import DYSON_DEVICES
@@ -35,7 +35,7 @@ DYSON_CLIMATE_DEVICES = "dyson_climate_devices"
 
 SERVICE_RECONNECT = 'reconnect'
 
-DYSON_RECONNECT_SCHEMA = ENTITY_SERVICE_SCHEMA
+DYSON_RECONNECT_SCHEMA = make_entity_service_schema({})
 
 
 def setup_platform(hass, config, add_devices, discovery_info=None):

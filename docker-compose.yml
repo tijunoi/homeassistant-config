@@ -22,3 +22,20 @@ services:
         ports:
             - '3000:3000'
         restart: always
+    deconz:
+        container_name: deconz
+        image: marthoc/deconz
+        network_mode: host
+        restart: always
+        volumes:
+            - '/home/homeassistant/deconz:/root/.local/share/dresden-elektronik/deCONZ'
+            - '/etc/localtime:/etc/localtime:ro'
+        devices: 
+            - /dev/ttyACM0
+        environment: 
+            - DECONZ_DEVICE=/dev/ttyACM0
+            - DECONZ_WEB_PORT=8080
+            - DECONZ_WS_PORT=8443
+            - DEBUG_INFO=1
+            - TZ=Europe/Madrid
+            - DECONZ_VNC_MODE=1

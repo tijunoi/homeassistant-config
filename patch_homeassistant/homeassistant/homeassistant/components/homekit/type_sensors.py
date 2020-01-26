@@ -259,8 +259,8 @@ class BinarySensor(HomeAccessory):
         state_char = Characteristic("HA state", "20f963d7-e2a1-4ba5-8987-ca3df467ea27", state_char_props)
 
         service = self.add_preload_service(service_char[0])
-        service.add_characteristic(state_char)
-        self.char_ha_state = service.configure_char(state_char.display_name, value=sensor_state)
+#         service.add_characteristic(state_char)
+#         self.char_ha_state = service.configure_char(state_char.display_name, value=sensor_state)
         self.char_detected = service.configure_char(service_char[1], value=0)
 
     def update_state(self, new_state):
@@ -268,5 +268,5 @@ class BinarySensor(HomeAccessory):
         state = new_state.state
         detected = state in (STATE_ON, STATE_HOME)
         self.char_detected.set_value(detected)
-        self.char_ha_state.set_value(state)
+#         self.char_ha_state.set_value(state)
         _LOGGER.debug("%s: Set to %d", self.entity_id, detected)

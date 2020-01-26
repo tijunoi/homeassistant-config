@@ -1,0 +1,10 @@
+{
+    "bridge": {
+        "name": "Homebridge",
+        "username": "0E:8A:64:6D:E4:B1",
+        "port": 52679,
+        "pin": "031-45-154"
+    },
+    "accessories": [],
+    "platforms": []
+}

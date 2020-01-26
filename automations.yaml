@@ -1,7 +1,22 @@
 - alias: 'Trigger alarm while armed away'
   trigger:
     - platform: state
-      entity_id: light.small
+      entity_id: binary_sensor.entrance_door
+      to: 'on'
+    - platform: state
+      entity_id: binary_sensor.entrance_motion
+      to: 'on'
+    - platform: state
+      entity_id: binary_sensor.bathroom_window
+      to: 'on'
+    - platform: state
+      entity_id: binary_sensor.bedroom_balcony_door
+      to: 'on'
+    - platform: state
+      entity_id: binary_sensor.bedroom_left_window
+      to: 'on'
+    - platform: state
+      entity_id: binary_sensor.bedroom_right_window
       to: 'on'
   condition:
     - condition: state
@@ -17,10 +32,54 @@
       entity_id: alarm_control_panel.home_alarm
       to: 'triggered'
   action:
-    - service: tts.google_translate_say
-      entity_id: media_player.bedroom_speaker
+    - service: notify.iphones
       data:
-        message: "ALARM! The alarm has been triggered"
+        title: "Home Alarm triggered!"
+        message: >
+          The alarm has been triggered by {{ trigger.to_state.attributes.friendly_name }}
+        data:
+          push:
+            sound:
+              name: default
+              critical: 1
+              volume: 1.0
+
+- alias: 'Turn on entrance lights if there is motion or door is opened'
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.entrance_door, binary_sensor.entrance_motion
+      from:  'off'
+      to:  'on'
+  condition:
+    - condition: state
+      entity_id: alarm_control_panel.home_alarm
+      state: 'disarmed'  
+  action:
+    - service: light.turn_on
+      data:
+        entity_id:
+          - light.entrance_1
+          - light.entrance_2
+          - light.entrance_3
+    - service: timer.start
+      data:
+         entity_id: timer.entrance
+
+- alias: 'Turn off entrance lights 1 minute after trigger'
+  trigger:
+    platform: event
+    event_type: timer.finished
+    event_data:
+      entity_id: timer.entrance
+  action:
+    service: light.turn_off
+    data:
+      entity_id:
+        - light.entrance_1
+        - light.entrance_2
+        - light.entrance_3
+
+
 
 - alias: 'Try reconnect to Dyson fan if unavailable for 3 hours'
   trigger:

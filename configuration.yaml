@@ -79,7 +79,7 @@ homekit:
       - person.nil
       - person.steve
   entity_config:
-    - alarm_control_panel.home_alarm:
+    alarm_control_panel.home_alarm:
       code: !secret ALARM_CODE
 
 # Sensor to detect if anyone is at home

@@ -33,7 +33,7 @@
       to: 'triggered'
   action:
     - service: notify.iphones
-      data:
+      data_template:
         title: "Home Alarm triggered!"
         message: >
           The alarm has been triggered by {{ trigger.to_state.attributes.friendly_name }}

@@ -30,12 +30,32 @@ services:
         volumes:
             - '/home/homeassistant/deconz:/root/.local/share/dresden-elektronik/deCONZ'
             - '/etc/localtime:/etc/localtime:ro'
-        devices: 
+        devices:
             - /dev/ttyACM0
-        environment: 
+        environment:
             - DECONZ_DEVICE=/dev/ttyACM0
             - DECONZ_WEB_PORT=8080
             - DECONZ_WS_PORT=8443
             - DEBUG_INFO=1
             - TZ=Europe/Madrid
             - DECONZ_VNC_MODE=1
+    webserver:
+        container_name: webserver
+        image: 'httpd:2.4'
+        volumes: 
+            - '/home/homeassistant/.homeassistant/www/:/usr/local/apache2/htdocs'
+        ports:
+            - 8084:80
+        restart: always
+    homebridge:
+        image: oznu/homebridge:no-avahi
+        restart: always
+        network_mode: host
+        environment:
+            - TZ=Europe/Madrid
+            - PGID=1001
+            - PUID=1001
+            - HOMEBRIDGE_CONFIG_UI=1
+            - HOMEBRIDGE_CONFIG_UI_PORT=8085
+        volumes:
+            - '/home/homeassistant/.homeassistant/homebridge:/homebridge'

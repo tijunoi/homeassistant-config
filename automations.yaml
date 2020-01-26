@@ -51,9 +51,13 @@
       from:  'off'
       to:  'on'
   condition:
-    - condition: state
-      entity_id: alarm_control_panel.home_alarm
-      state: 'disarmed'  
+    condition: and
+    conditions:
+      - condition: state
+        entity_id: alarm_control_panel.home_alarm
+        state: 'disarmed'
+      - condition: template
+        value_template: "{{ state_attr('sun.sun', 'elevation') < -4 }}"
   action:
     - service: light.turn_on
       data:
@@ -65,7 +69,7 @@
       data:
          entity_id: timer.entrance
 
-- alias: 'Turn off entrance lights 1 minute after trigger'
+- alias: 'Turn off entrance lights 30 seconds after trigger'
   trigger:
     platform: event
     event_type: timer.finished

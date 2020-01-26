@@ -70,14 +70,19 @@ rest_command:
 
 homekit:
   filter:
+    include_domains:
+      - light
+      - alarm_control_panel
+    include_entities:
+      - person.nil
+      - person.steve
     exclude_entities:
       - light.living_room_sofa
       - light.bedroom_bed
       - light.small
       - light.living_room_table
-      - device_tracker.nils_iphone_xs
-      - person.nil
-      - person.steve
+      - light.christmas_balcony
+      - light.christmas_tree
   entity_config:
     alarm_control_panel.home_alarm:
       code: !secret ALARM_CODE
@@ -137,7 +142,7 @@ alarm_control_panel:
 
 timer:
   entrance:
-    duration: '00:01:00'
+    duration: '00:00:30'
 
 group: !include groups.yaml
 automation: !include automations.yaml

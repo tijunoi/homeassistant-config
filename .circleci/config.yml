@@ -12,6 +12,8 @@ jobs:
           command: |
             touch fake.pem
             mv circleci_secrets.yaml secrets.yaml
+            mkdir google-assistant
+            touch google-assistant/service_account.json
             docker-compose -f docker-compose.check.yml up --build --force-recreate --exit-code-from homeassistant
   deploy:
     machine:

@@ -15,6 +15,9 @@
 #Ignore homekit state
 .homekit.state
 
+# Google Assistant
+google-assistant/service_account.json
+
 #Ignore logs, dbs and bkps
 *.log
 *.db

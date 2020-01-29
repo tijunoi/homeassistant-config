@@ -87,6 +87,16 @@ homekit:
     alarm_control_panel.home_alarm:
       code: !secret ALARM_CODE
 
+google_assistant:
+  project_id: !secret GOOGLE_ASSISTANT_PROJECT_ID
+  service_account: !include google-assistant/service_account.json
+  report_state: true
+  secure_devices_pin: !secret ALARM_CODE
+  exposed_domains:
+    - fan
+    - sensor
+    - alarm_control_panel
+
 # Sensor to detect if anyone is at home
 person:
 binary_sensor:

@@ -58,6 +58,15 @@
         state: 'disarmed'
       - condition: template
         value_template: "{{ state_attr('sun.sun', 'elevation') < 7 }}"
+      - condition: state
+        entity_id: light.entrance_1
+        state: 'off'
+      - condition: state
+        entity_id: light.entrance_2
+        state: 'off'
+      - condition: state
+        entity_id: light.entrance_3
+        state: 'off'
   action:
     - service: light.turn_on
       data:

@@ -1,0 +1,47 @@
+- alias: 'Turn on entrance lights if there is motion or door is opened'
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.entrance_door, binary_sensor.entrance_motion
+      from:  'off'
+      to:  'on'
+  condition:
+    condition: and
+    conditions:
+      - condition: state
+        entity_id: alarm_control_panel.home_alarm
+        state: 'disarmed'
+      - condition: template
+        value_template: "{{ state_attr('sun.sun', 'elevation') < 7 }}"
+      - condition: state
+        entity_id: light.entrance_1
+        state: 'off'
+      - condition: state
+        entity_id: light.entrance_2
+        state: 'off'
+      - condition: state
+        entity_id: light.entrance_3
+        state: 'off'
+  action:
+    - service: light.turn_on
+      data:
+        entity_id:
+          - light.entrance_1
+          - light.entrance_2
+          - light.entrance_3
+    - service: timer.start
+      data:
+         entity_id: timer.entrance
+
+- alias: 'Turn off entrance lights 30 seconds after trigger'
+  trigger:
+    platform: event
+    event_type: timer.finished
+    event_data:
+      entity_id: timer.entrance
+  action:
+    service: light.turn_off
+    data:
+      entity_id:
+        - light.entrance_1
+        - light.entrance_2
+        - light.entrance_3

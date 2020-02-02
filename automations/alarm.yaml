@@ -1,0 +1,82 @@
+- alias: 'Trigger alarm while armed away'
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.entrance_door
+      to: 'on'
+    - platform: state
+      entity_id: binary_sensor.entrance_motion
+      to: 'on'
+    - platform: state
+      entity_id: binary_sensor.bathroom_window
+      to: 'on'
+    - platform: state
+      entity_id: binary_sensor.bedroom_balcony_door
+      to: 'on'
+    - platform: state
+      entity_id: binary_sensor.bedroom_left_window
+      to: 'on'
+    - platform: state
+      entity_id: binary_sensor.bedroom_right_window
+      to: 'on'
+  condition:
+    - condition: state
+      entity_id: alarm_control_panel.home_alarm
+      state: armed_away
+  action:
+    service: alarm_control_panel.alarm_trigger
+    entity_id: alarm_control_panel.home_alarm
+
+- id: alarm_trigger_play_sound
+  alias: 'Play alarm sound on all speakers when alarm triggered'
+  trigger:
+    - platform: state
+      entity_id: alarm_control_panel.home_alarm
+      from:  'armed_away'
+      to:  'triggered'
+  action:
+    - service: media_player.turn_on
+      data:
+        entity_id: media_player.all
+    - service: media_player.volume_set
+      data:
+        entity_id: media_player.all
+        volume_level: 1
+    - service: media_player.play_media
+      data:
+        entity_id: media_player.all
+        media_content_type: music
+        media_content_id: !secret ALARM_SOUND_URL
+
+- id: alarm_stop_playing_sound
+  alias: 'Stop playing the alarm sound when disarmed or re-armed'
+  trigger:
+    - platform: state
+      entity_id: alarm_control_panel.home_alarm
+      from: 'triggered'
+      to: 'armed_away'
+    - platform: state
+      entity_id: alarm_control_panel.home_alarm
+      from: 'triggered'
+      to: 'disarmed'
+  action:
+    - service: media_player.turn_off
+      data_template:
+        entity_id: media_player.all
+
+- alias: 'Send notification when alarm triggered'
+  trigger:
+    - platform: state
+      entity_id: alarm_control_panel.home_alarm
+      to: 'triggered'
+  action:
+    - service: notify.iphones
+      data_template:
+        title: "Home Alarm triggered!"
+        message: >
+          The alarm has been triggered by {{ trigger.to_state.attributes.friendly_name }}
+        data:
+          push:
+            sound:
+              name: default
+              critical: 1
+              volume: 1.0

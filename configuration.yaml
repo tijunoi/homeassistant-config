@@ -141,14 +141,14 @@ alarm_control_panel:
     code_arm_required: false
     pending_time: 30
     delay_time: 20
-    trigger_time: 4
+    trigger_time: 60
     disarmed:
       trigger_time: 0
     armed_home:
       pending_time: 0
       delay_time: 0
     armed_away:
-      pending_time: 0
+      pending_time: 10
       delay_time: 0
 
 timer:
@@ -156,5 +156,5 @@ timer:
     duration: '00:00:30'
 
 group: !include groups.yaml
-automation: !include automations.yaml
+automation: !include_dir_merge_list automations
 script: !include scripts.yaml

@@ -14,6 +14,7 @@ jobs:
             mv circleci_secrets.yaml secrets.yaml
             mkdir google-assistant
             touch google-assistant/service_account.json
+            echo "{ \"type\": \"service_account\", \"project_id\": \"foobar\", \"private_key_id\": \"a1b2c3\", \"private_key\": \"aa11bb22cc33\", \"client_email\": \"foo@bar.com\", \"cliend_id\": \"abcdef\", \"auth_uri\": \"http://foo.bar\", \"token_uri\": \"http://foo.bar\", \"auth_provider_x509_cert_url\": \"http://foo.bar\", \"client_x509_cert_url\": \"http://foo.bar\" }" > google-assistant/service_account.json
             docker-compose -f docker-compose.check.yaml up --build --force-recreate --exit-code-from homeassistant
   deploy:
     machine:

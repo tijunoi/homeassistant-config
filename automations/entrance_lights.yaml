@@ -23,11 +23,17 @@
         state: 'off'
   action:
     - service: light.turn_on
-      data:
+      data_template:
         entity_id:
           - light.entrance_1
           - light.entrance_2
           - light.entrance_3
+        brightness_pct: >
+          {% if now().hour < 7 or now().hour >= 23 -%}
+            10
+          {% else %}
+            100
+          {% endif %}
     - service: timer.start
       data:
          entity_id: timer.entrance

@@ -48,7 +48,7 @@
       data:
         entity_id: media_player.all
         media_content_type: music
-        media_content_id: !secret ALARM_SOUND_URL
+        media_content_id: http://192.168.86.28:8084/security_alarm.mp3
 
 - id: alarm_stop_playing_sound
   alias: 'Stop playing the alarm sound when disarmed or re-armed'
@@ -78,8 +78,46 @@
         message: >
           The alarm has been triggered by {{ trigger.to_state.attributes.friendly_name }}
         data:
+          apns_headers:
+            'apns-collapse-id': 'home_alarm'
           push:
+            badge: 1
             sound:
               name: default
               critical: 1
               volume: 1.0
+
+- alias: 'Send notification when alarm triggers to pending'
+  trigger:
+    - platform: state
+      entity_id: alarm_control_panel.home_alarm
+      from:  'armed_away'
+      to:  'pending'
+  action:
+    - service: notify.iphones
+      data:
+        title: "Home Alarm about to trigger..."
+        message: "The alarm will trigger in 30 seconds..."
+        data:
+          push:
+            badge: 1
+          apns_headers:
+            'apns-collapse-id': 'home_alarm'
+
+- alias: 'Clear alarm notification when disarmed'
+  trigger:
+    - platform: state
+      entity_id: alarm_control_panel.home_alarm
+      from: 'pending'
+      to: 'disarmed'
+    - platform: state
+      entity_id: alarm_control_panel.home_alarm
+      from: 'triggered'
+      to: 'disarmed'
+  action:
+    - service: notify.iphones
+      data:
+        message: delete_alert
+        data:
+          push:
+            badge: 0

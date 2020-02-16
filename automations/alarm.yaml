@@ -3,9 +3,9 @@
     - platform: state
       entity_id: binary_sensor.entrance_door
       to: 'on'
-    - platform: state
-      entity_id: binary_sensor.entrance_motion
-      to: 'on'
+    # - platform: state
+    #   entity_id: binary_sensor.entrance_motion
+    #   to: 'on'
     - platform: state
       entity_id: binary_sensor.bathroom_window
       to: 'on'
@@ -97,7 +97,7 @@
     - service: notify.iphones
       data:
         title: "Home Alarm about to trigger..."
-        message: "The alarm will trigger in 30 seconds..."
+        message: "The alarm will trigger in 10 seconds..."
         data:
           push:
             badge: 1

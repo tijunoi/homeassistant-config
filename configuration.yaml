@@ -139,7 +139,7 @@ alarm_control_panel:
     name: Home Alarm
     code: !secret ALARM_CODE
     code_arm_required: false
-    pending_time: 30
+    pending_time: 0
     delay_time: 20
     trigger_time: 60
     disarmed:
@@ -149,7 +149,7 @@ alarm_control_panel:
       delay_time: 0
     armed_away:
       pending_time: 10
-      delay_time: 0
+      delay_time: 10
 
 timer:
   entrance:

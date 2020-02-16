@@ -31,8 +31,11 @@
   trigger:
     - platform: state
       entity_id: alarm_control_panel.home_alarm
-      from:  'armed_away'
+      from:  'pending'
       to:  'triggered'
+  condition:
+    condition: template
+    value_template: "{{ trigger.from_state.attributes.pre_pending_state in ['armed_away'] }}"
   action:
     - service: media_player.turn_on
       data:

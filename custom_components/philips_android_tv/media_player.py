@@ -313,7 +313,7 @@ class PhilipsTV(MediaPlayerDevice):
         self._min_volume = self._tv.min_volume
         self._max_volume = self._tv.max_volume
         self._source_list = self._tv.app_source_list + self._tv.channel_source_list
-        self._source = self._tv.app_name + ' ' + self._tv.channel_name
+        self._source = self._tv.channel_name
         self._channel_id = self._tv.channel_id
         self._channel_name = self._tv.channel_name
         self._media_cont_type = self._tv.media_content_type

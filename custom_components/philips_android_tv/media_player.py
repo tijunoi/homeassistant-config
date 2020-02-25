@@ -27,11 +27,13 @@ from requests.exceptions import RequestException
 
 # Workaround to suppress warnings about SSL certificates in Home Assistant log
 import urllib3
+
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 _LOGGER = logging.getLogger(__name__)
 
 CONF_FAV_ONLY = 'favorite_channels_only'
+CONF_HIDE_CHANNELS = 'hide_channels'
 
 MIN_TIME_BETWEEN_UPDATES = timedelta(seconds=5)
 
@@ -58,7 +60,8 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
     vol.Required(CONF_USERNAME, default=DEFAULT_USER): cv.string,
     vol.Required(CONF_PASSWORD, default=DEFAULT_PASS): cv.string,
     vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
-    vol.Optional(CONF_FAV_ONLY, default=False): cv.boolean
+    vol.Optional(CONF_FAV_ONLY, default=False): cv.boolean,
+    vol.Optional(CONF_HIDE_CHANNELS, default=False): cv.boolean
 })
 
 SERVICE_SEND_REMOTE_KEY_SCHEMA = vol.Schema(
@@ -83,6 +86,7 @@ HOMEKIT_PHILIPS_TV_KEY_MAP = {
     15: "Home"
 }
 
+
 # pylint: disable=unused-argument
 def setup_platform(hass, config, add_devices, discovery_info=None):
     """Set up the Philips 2016+ TV platform."""
@@ -93,7 +97,8 @@ def setup_platform(hass, config, add_devices, discovery_info=None):
     user = config.get(CONF_USERNAME)
     password = config.get(CONF_PASSWORD)
     favorite_only = config.get(CONF_FAV_ONLY)
-    tvapi = PhilipsTVBase(host, user, password, favorite_only)
+    hide_channels = config.get(CONF_HIDE_CHANNELS)
+    tvapi = PhilipsTVBase(host, user, password, favorite_only, hide_channels)
     device = PhilipsTV(tvapi, name, mac)
     add_devices([device])
     hass.data[PHILIPS_TV_DOMAIN][host] = device
@@ -195,7 +200,8 @@ class PhilipsTV(MediaPlayerDevice):
             self._tv.set_power_state('On')
             i += 1
         if not self._api_online:
-            _LOGGER.warn("TV WakeOnLan is not working. Check mac address and make sure TV WakeOnLan is activated. If running inside docker, make sure to use host network.")
+            _LOGGER.warn(
+                "TV WakeOnLan is not working. Check mac address and make sure TV WakeOnLan is activated. If running inside docker, make sure to use host network.")
             return None
         i = 0
         while not self._tv.on and i < 10:
@@ -330,7 +336,7 @@ class PhilipsTV(MediaPlayerDevice):
 
 
 class PhilipsTVBase(object):
-    def __init__(self, host, user, password, favorite_only):
+    def __init__(self, host, user, password, favorite_only, hide_channels):
         self._host = host
         self._user = user
         self._password = password
@@ -342,6 +348,7 @@ class PhilipsTVBase(object):
         self.volume = 0
         self.muted = False
         self.favorite_only = favorite_only
+        self.hide_channels = hide_channels
         self.applications = {}
         self.app_source_list = []
         self.class_name_to_app = {}
@@ -404,10 +411,11 @@ class PhilipsTVBase(object):
     def update(self):
         self.get_state()
         self.get_applications()
-        if self.favorite_only:
-            self.get_favorite_channels()
-        else:
-            self.get_channels()
+        if not self.hide_channels:
+            if self.favorite_only:
+                self.get_favorite_channels()
+            else:
+                self.get_channels()
         self.get_audiodata()
         self.get_channel()
 
@@ -417,7 +425,7 @@ class PhilipsTVBase(object):
             if rr:
                 pkg_name = rr.get('component', {}).get('packageName', '')
                 class_name = rr.get('component', {}).get('className', '')
-                if pkg_name in ('org.droidtv.zapster', 'org.droidtv.playtv','NA'):
+                if pkg_name in ('org.droidtv.zapster', 'org.droidtv.playtv', 'NA'):
                     self.media_content_type = 'channel'
                     r = self._get_req('activities/tv')
                     if r:
@@ -438,7 +446,8 @@ class PhilipsTVBase(object):
                         self.app_name = '📱'
                         self.channel_name = 'Net TV Browser'
                     elif pkg_name == 'org.droidtv.settings':
-                        self.app_name = self.class_name_to_app.get(class_name, {}).get('label', class_name) if class_name != 'NA' else ''
+                        self.app_name = self.class_name_to_app.get(class_name, {}).get('label',
+                                                                                       class_name) if class_name != 'NA' else ''
                         self.channel_name = 'Settings'
                     else:
                         app = self.class_name_to_app.get(class_name, {})
@@ -454,8 +463,8 @@ class PhilipsTVBase(object):
         if r:
             self.channels = dict(sorted({chn['name']: chn
                                          for chn in r['Channel']}.items(),
-                                         key=lambda a: a[0].upper()))
-            self.channel_source_list = ['📺 ' + channelName
+                                        key=lambda a: a[0].upper()))
+            self.channel_source_list = [channelName
                                         for channelName in self.channels.keys()]
 
     # Filtering out favorite channels here
@@ -475,8 +484,7 @@ class PhilipsTVBase(object):
             fav_channel = {key: all_channels[key] for key in ccids}
             self.channel_source_list = []
             for fav_channel_ccid, fav_channel_ccinfo in fav_channel.items():
-                self.channel_source_list.append('📺 ' +
-                                                fav_channel_ccinfo['name'])
+                self.channel_source_list.append(fav_channel_ccinfo['name'])
             self.channel_source_list.sort()
         else:
             _LOGGER.warn("Favorites not supported for this TV")
@@ -489,17 +497,17 @@ class PhilipsTVBase(object):
                                       for app in r['applications']}
             self.applications = dict(sorted({app['label']: app
                                              for app in r['applications']}.items(),
-                                             key=lambda a: a[0].upper()))
-            self.app_source_list = ['📱 ' + appLabel
+                                            key=lambda a: a[0].upper()))
+            self.app_source_list = [appLabel
                                     for appLabel in self.applications.keys()]
 
     def change_source(self, source_label):
         if source_label:
-            if source_label.startswith('📱'):
-                app = self.applications[source_label[2:]]
+            if source_label in self.applications:
+                app = self.applications[source_label]
                 self._post_req('activities/launch', app)
-            elif source_label.startswith('📺'):
-                chn = self.channels[source_label[2:]]
+            elif source_label in self.channels:
+                chn = self.channels[source_label]
                 data = {
                     'channel': {
                         'ccid': chn['ccid'],

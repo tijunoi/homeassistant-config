@@ -2,3 +2,23 @@ sensor.bedroom_humidity:
   device_class: humidity
 media_player.philipstv:
   device_class: tv
+  source_list:
+    - AirScreen
+    - "ES File Explorer"
+    - HBO
+    - Kodi
+    - "Live Channels"
+    - "Manage Apps"
+    - Nest
+    - Netflix
+    - "Play Movies & TV"
+    - "Play Store"
+    - "Popcorn Time"
+    - "Prime Video"
+    - Settings
+    - Spotify
+    - Ted
+    - "TuneIn Radio"
+    - TV
+    - TVirl
+    - YouTube

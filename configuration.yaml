@@ -77,6 +77,7 @@ homekit:
     include_entities:
       - person.nil
       - person.steve
+      - media_player.philipstv
     exclude_entities:
       - light.living_room_sofa
       - light.bedroom_bed
@@ -129,6 +130,7 @@ media_player:
     mac: !secret PHILIPS_TV_MAC
     username: !secret PHILIPS_TV_USERNAME
     password: !secret PHILIPS_TV_PASSWORD
+    hide_channels: true
 
 homeassistant:
   name: Home

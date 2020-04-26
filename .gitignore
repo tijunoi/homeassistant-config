@@ -36,9 +36,8 @@ secrets.yaml
 known_devices.yaml
 .ios.conf
 
-# Ignore homebridge files except config.json and package.json
+# Ignore homebridge files except package.json
 homebridge/*
-!homebridge/config.json
 !homebridge/package.json
 !homebridge/startup.sh
 

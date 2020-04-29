@@ -157,6 +157,33 @@ timer:
   entrance:
     duration: '00:00:30'
 
+# Dishwasher timer entities
+dishwasher_timer:
+  id: diswasher
+  platform: timer
+  duration: '01:14:00'
+
+input_select:
+  diswasher_programs:
+    name: "Diswasher program"
+    options:
+      - P3
+      - P4 (eco)
+    icon: mdi:dishwasher
+
+dishwasher_current_program_duration:
+  platform: template
+  sensors:
+    dishwasher_current_program_duration:
+      friendly_name: "Current DW program duration"
+      value_template: >
+        {% set mapper =
+          { 'P3': '01:14:00',
+            'P4': '01:56:00' } %}
+        {% set state = states('input_select.dishwasher_programs') %}
+        {% set duration = mapper[state] if state in mapper %}
+        {{ duration }}
+
 group: !include groups.yaml
 automation: !include_dir_merge_list automations
 script: !include scripts.yaml

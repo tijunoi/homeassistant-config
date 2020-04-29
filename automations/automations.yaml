@@ -76,3 +76,15 @@
     service: light.turn_off
     data:
       entity_id: light.christmas_balcony
+
+- id: "dishwasher_notify_finished"
+  alias: Notify when dishwasher timer has finished.
+  trigger:
+    - platform: event
+      event_type: timer.finished
+      event_data:
+        entity_id: timer.dishwasher
+  action:
+      - service: rest_command.assistant_broadcast
+        data:
+          command: "Dishwasher has finished." 

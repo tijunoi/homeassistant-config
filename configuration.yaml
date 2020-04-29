@@ -156,15 +156,13 @@ alarm_control_panel:
 timer:
   entrance:
     duration: '00:00:30'
+  dishwasher:
+    duration: '01:14:00'
 
 # Dishwasher timer entities
-timer dishwasher:
-  platform: timer
-  duration: '01:14:00'
-
 input_select:
-  diswasher_programs:
-    name: "Diswasher program"
+  dishwasher_programs:
+    name: "Dishwasher program"
     options:
       - P3
       - P4 (eco)

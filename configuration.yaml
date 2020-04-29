@@ -158,8 +158,7 @@ timer:
     duration: '00:00:30'
 
 # Dishwasher timer entities
-dishwasher_timer:
-  id: diswasher
+timer dishwasher:
   platform: timer
   duration: '01:14:00'
 
@@ -171,7 +170,7 @@ input_select:
       - P4 (eco)
     icon: mdi:dishwasher
 
-dishwasher_current_program_duration:
+sensor dishwasher_current_program_duration:
   platform: template
   sensors:
     dishwasher_current_program_duration:

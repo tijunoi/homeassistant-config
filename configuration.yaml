@@ -176,7 +176,7 @@ sensor dishwasher_current_program_duration:
       value_template: >
         {% set mapper =
           { 'P3': '01:14:00',
-            'P4': '01:56:00' } %}
+            'P4 (eco)': '01:56:00' } %}
         {% set state = states('input_select.dishwasher_programs') %}
         {% set duration = mapper[state] if state in mapper %}
         {{ duration }}

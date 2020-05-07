@@ -17,6 +17,7 @@ from homeassistant.components.vacuum import (
     STATE_RETURNING,
     SUPPORT_BATTERY,
     SUPPORT_CLEAN_SPOT,
+    SUPPORT_ROOMS,
     SUPPORT_FAN_SPEED,
     SUPPORT_LOCATE,
     SUPPORT_PAUSE,
@@ -155,6 +156,7 @@ SUPPORT_XIAOMI = (
     | SUPPORT_BATTERY
     | SUPPORT_CLEAN_SPOT
     | SUPPORT_START
+    | SUPPORT_ROOMS
 )
 
 

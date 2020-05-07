@@ -414,10 +414,12 @@ class MiroboVacuum(StateVacuumDevice):
         :param List rooms: List of rooms to clean: [16,17,18]"""
 
         # Check that room exists before sending
-        available_room_ids = map(lambda room: room.id, self.available_rooms)
+        available_room_ids = map(lambda room: room["id"], self.available_rooms)
         for room_id in rooms:
             if room_id not in available_room_ids:
-                raise vol.Invalid("Tried to clean a non available room, {}".format(id))
+                raise vol.Invalid(
+                    "Tried to clean a non available room, {}".format(room_id)
+                )
         await self._try_command(
             "Unable to start the vacuum for a room clean-up: %s",
             self._vacuum.segment_clean,

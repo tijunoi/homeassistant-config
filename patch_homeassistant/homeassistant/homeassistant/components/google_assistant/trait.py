@@ -538,7 +538,7 @@ class StartStopTrait(_Trait):
         if supported_features & vacuum.SUPPORT_ROOMS != 0:
             attributes["availableZones"] = list(
                 map(
-                    lambda r: r.name,
+                    lambda r: r["name"],
                     self.state.attributes.get(vacuum.ATTR_AVAILABLE_ROOMS, []),
                 )
             )
@@ -562,9 +562,9 @@ class StartStopTrait(_Trait):
                     )
                     room_id = next(
                         [
-                            room.id
+                            room["id"]
                             for room in available_rooms
-                            if room.name == params.get("zone")
+                            if room["name"] == params.get("zone")
                         ]
                     )
                     await self.hass.services.async_call(

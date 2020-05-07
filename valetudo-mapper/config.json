@@ -1,0 +1,41 @@
+{
+  "mqtt": {
+    "identifier": "rockrobo",
+    "topicPrefix": "valetudo",
+    "autoconfPrefix": "homeassistant",
+    "broker_url": "mqtt://mqtt:1883",
+    "caPath": "",
+    "mapDataTopic": "valetudo/rockrobo/map_data",
+    "minMillisecondsBetweenMapUpdates": 3000,
+    "publishMapImage": true,
+    "publishMapData": true
+  },
+  "mapSettings": {
+    "colors": {
+      "background": "#33a1f5",
+      "background2": "#046cd4",
+      "floor": "#56affc",
+      "obstacle_strong": "#a1dbff",
+      "path": "white",
+      "forbidden_marker": "red",
+      "forbidden_zone": "rgba(255, 0, 0, 0.38)",
+      "cleaned_marker": "rgba(53, 125, 46, 1.0)",
+      "cleaned_zone": "rgba(107, 244, 66, 0.3)",
+      "cleaned_block": "rgba(107, 244, 36, 0.34)"
+    },
+    "drawPath": true,
+    "drawCharger": true,
+    "drawRobot": true,
+    "drawCurrentlyCleanedZones": false,
+    "drawCurrentlyCleanedBlocks": false,
+    "drawForbiddenZones": true,
+    "drawVirtualWalls": true,
+    "scale": 4,
+    "gradientBackground": true,
+    "autoCrop": 20
+  },
+  "webserver": {
+    "enabled": false,
+    "port": 3000
+  }
+}

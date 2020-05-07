@@ -98,6 +98,8 @@ google_assistant:
     - fan
     - sensor
     - alarm_control_panel
+    - camera
+    - vacuum
 
 # Sensor to detect if anyone is at home
 person:
@@ -152,6 +154,12 @@ alarm_control_panel:
     armed_away:
       pending_time: 10
       delay_time: 10
+
+vacuum:
+  - platform: xiaomi_miio
+    host: !secret ROBOROCK_IP
+    token: !secret ROBOROCK_TOKEN
+    name: Molly
 
 timer:
   entrance:

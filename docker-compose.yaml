@@ -69,3 +69,20 @@ services:
             - 9000
         ports:
             - 8083:9000
+    mqtt:
+        container_name: mqtt
+        image: eclipse-mosquitto
+        restart: unless-stopped
+        user: '1001'
+        ports:
+            - 1883:1883
+            - 9001:9001
+        volumes:
+            - './mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf'
+            - '/home/homeassistant/mosquitto/data:/mosquitto/data'
+    valetudo-mapper:
+        container_name: valetudo-mapper
+        image: rand256/valetudo-mapper
+        restart: always
+        volumes:
+            - './valetudo-mapper/config.json:/app/config.json'

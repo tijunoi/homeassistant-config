@@ -560,17 +560,17 @@ class StartStopTrait(_Trait):
                     available_rooms = self.state.attributes.get(
                         vacuum.ATTR_AVAILABLE_ROOMS
                     )
-                    room_id = next(
-                        [
-                            room["id"]
-                            for room in available_rooms
-                            if room["name"] == params.get("zone")
-                        ]
-                    )
+                    # It will be only 1 room but may support more in the future
+                    room_ids = [
+                        room["id"]
+                        for room in available_rooms
+                        if room["name"] == params.get("zone")
+                    ]
+
                     await self.hass.services.async_call(
                         self.state.domain,
                         vacuum.SERVICE_CLEAN_ROOM,
-                        {ATTR_ENTITY_ID: self.state.entity_id, "rooms": [room_id]},
+                        {ATTR_ENTITY_ID: self.state.entity_id, "rooms": room_ids},
                         blocking=True,
                         context=data.context,
                     )
@@ -635,6 +635,7 @@ class LocatorTrait(_Trait):
         await self.hass.services.async_call(
             self.state.domain,
             vacuum.SERVICE_LOCATE,
+            {ATTR_ENTITY_ID: self.state.entity_id},
             blocking=True,
             context=data.context,
         )
@@ -668,9 +669,9 @@ class EnergyStorageTrait(_Trait):
             "isPluggedIn": is_docked,
             "isCharging": is_docked and battery_level < 100,
             "capacityRemaining": [{"unit": "PERCENTAGE", "rawValue": battery_level}],
-            "capacityUntilFull": [
-                {"unit": "PERCENTAGE", "rawValue": 100 - battery_level}
-            ],
+            # "capacityUntilFull": [
+            #    {"unit": "PERCENTAGE", "rawValue": 100 - battery_level}
+            # ],
         }
 
 

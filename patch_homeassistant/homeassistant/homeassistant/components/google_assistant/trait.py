@@ -686,6 +686,7 @@ class VacuumModesTrait(_Trait):
 
     SYNONYMS = {
         "fan speed": [
+            "Fan speed",
             "fan speed",
             "speed",
             "mode",

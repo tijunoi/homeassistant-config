@@ -100,6 +100,12 @@ google_assistant:
     - alarm_control_panel
     - camera
     - vacuum
+  entity_config:
+    vacuum.molly:
+      aliases:
+        - Mali
+        - Rocky
+        - robot
 
 # Sensor to detect if anyone is at home
 person:

@@ -674,6 +674,113 @@ class EnergyStorageTrait(_Trait):
             # ],
         }
 
+@register_trait
+class VacuumModesTrait(_Trait):
+    """Trait to set modes for a vacuum entity.
+
+    https://developers.google.com/actions/smarthome/traits/modes
+    """
+
+    name = TRAIT_MODES
+    commands = [COMMAND_MODES]
+
+    SYNONYMS = {
+        "fan speed": [
+            "fan speed",
+            "speed",
+            "mode",
+            "vacuum mode",
+            "cleaning mode",
+            "clean mode",
+        ],
+        "Gentle": [
+            "mop",
+            "mopping",
+            "water",
+            "wet cleaning",
+            "wet",
+        ],  # TODO: refactor. This is hardcoded for roborock S5 gentle mode which is the mop mode.
+        "Silent": ["quiet", "silent"],
+        "Standard": ["balanced", "standard"],
+        "Medium": ["turbo"],
+        "Turbo": ["max", "maximum"],
+    }
+
+    @staticmethod
+    def supported(domain, features, device_class):
+        """Test if state is supported."""
+
+        return domain == vacuum.DOMAIN and (features & vacuum.SUPPORT_FAN_SPEED != 0)
+
+    def sync_attributes(self):
+        """Return mode attributes for a sync request."""
+
+        def _generate(name, settings):
+            mode = {
+                "name": name,
+                "name_values": [
+                    {"name_synonym": self.SYNONYMS.get(name, [name]), "lang": "en"}
+                ],
+                "settings": [],
+                "ordered": False,
+            }
+            for setting in settings:
+                mode["settings"].append(
+                    {
+                        "setting_name": setting,
+                        "setting_values": [
+                            {
+                                "setting_synonym": self.SYNONYMS.get(
+                                    setting, [setting]
+                                ),
+                                "lang": "en",
+                            }
+                        ],
+                    }
+                )
+            return mode
+
+        attrs = self.state.attributes
+        modes = []
+        if vacuum.ATTR_FAN_SPEED_LIST in attrs:
+            modes.append(_generate("fan speed", attrs[vacuum.ATTR_FAN_SPEED_LIST]))
+
+        payload = {"availableModes": modes}
+
+        return payload
+
+    def query_attributes(self):
+        """Return current modes."""
+        attrs = self.state.attributes
+        response = {}
+        mode_settings = {}
+
+        if vacuum.ATTR_FAN_SPEED_LIST in attrs:
+            mode_settings["fan speed"] = attrs.get(vacuum.ATTR_FAN_SPEED)
+
+        if mode_settings:
+            response["currentModeSettings"] = mode_settings
+
+        return response
+
+    async def execute(self, command, data, params, challenge):
+        """Execute an SetModes command."""
+        settings = params.get("updateModeSettings")
+        fan_speed = settings.get("fan speed")
+
+        if fan_speed:
+            await self.hass.services.async_call(
+                vacuum.DOMAIN,
+                vacuum.SERVICE_SET_FAN_SPEED,
+                {
+                    ATTR_ENTITY_ID: self.state.entity_id,
+                    vacuum.ATTR_FAN_SPEED: fan_speed,
+                },
+                blocking=True,
+                context=data.context,
+            )
+
+
 
 @register_trait
 class TemperatureSettingTrait(_Trait):

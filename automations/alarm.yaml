@@ -35,7 +35,7 @@
       to:  'triggered'
   condition:
     condition: template
-    value_template: "{{ trigger.from_state.attributes.pre_pending_state in ['armed_away'] }}"
+    value_template: "{{ trigger.from_state.attributes.previous_state in ['armed_away'] }}"
   action:
     - service: media_player.turn_on
       data:

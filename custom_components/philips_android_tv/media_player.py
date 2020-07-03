@@ -15,6 +15,21 @@ from homeassistant.components.media_player.const import (
     SUPPORT_TURN_ON, SUPPORT_VOLUME_MUTE, SUPPORT_VOLUME_STEP,
     SUPPORT_SELECT_SOURCE, SUPPORT_HOMEKIT_REMOTE
 )
+
+from homeassistant.components.homekit.const import (
+    KEY_ARROW_DOWN,
+    KEY_ARROW_LEFT,
+    KEY_ARROW_RIGHT,
+    KEY_ARROW_UP,
+    KEY_BACK,
+    KEY_EXIT,
+    KEY_FAST_FORWARD,
+    KEY_INFORMATION,
+    KEY_NEXT_TRACK,
+    KEY_PREVIOUS_TRACK,
+    KEY_REWIND,
+    KEY_SELECT
+)
 from homeassistant.const import (
     CONF_HOST, CONF_MAC, CONF_NAME, CONF_USERNAME, CONF_PASSWORD, STATE_OFF,
     STATE_ON, STATE_IDLE, STATE_UNKNOWN, STATE_PLAYING, STATE_PAUSED,
@@ -72,18 +87,18 @@ PHILIPS_TV_DOMAIN = "philips_android_tv"
 SERVICE_SEND_REMOTE_KEY = "send_remote_key"
 
 HOMEKIT_PHILIPS_TV_KEY_MAP = {
-    0: "Rewind",
-    1: "FastForward",
-    2: "Next",
-    3: "Previous",
-    4: "CursorUp",
-    5: "CursorDown",
-    6: "CursorLeft",
-    7: "CursorRight",
-    8: "Confirm",
-    9: "Back",
-    10: "Home",
-    15: "Home"
+    KEY_REWIND: "Rewind",
+    KEY_FAST_FORWARD: "FastForward",
+    KEY_NEXT_TRACK: "Next",
+    KEY_PREVIOUS_TRACK: "Previous",
+    KEY_ARROW_UP: "CursorUp",
+    KEY_ARROW_DOWN: "CursorDown",
+    KEY_ARROW_LEFT: "CursorLeft",
+    KEY_ARROW_RIGHT: "CursorRight",
+    KEY_SELECT: "Confirm",
+    KEY_BACK: "Back",
+    KEY_EXIT: "Home",
+    KEY_INFORMATION: "Home"
 }
 
 

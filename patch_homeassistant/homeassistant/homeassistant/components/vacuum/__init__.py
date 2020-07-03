@@ -158,6 +158,11 @@ class _BaseVacuum(Entity):
         return None
 
     @property
+    def battery_icon(self):
+        """Return the battery icon for the vacuum cleaner."""
+        raise NotImplementedError()
+
+    @property
     def fan_speed(self):
         """Return the fan speed of the vacuum cleaner."""
         return None
@@ -171,6 +176,32 @@ class _BaseVacuum(Entity):
     def available_rooms(self):
         """Get the list of available rooms for vacuum room cleaning."""
         raise NotImplementedError()
+
+    @property
+    def capability_attributes(self):
+        """Return capability attributes."""
+        attributes = {}
+        if self.supported_features & SUPPORT_FAN_SPEED:
+            attributes[ATTR_FAN_SPEED_LIST] = self.fan_speed_list
+
+        if self.available_rooms is not None:
+            attributes[ATTR_AVAILABLE_ROOMS] = self.available_rooms
+
+        return attributes
+
+    @property
+    def state_attributes(self):
+        """Return the state attributes of the vacuum cleaner."""
+        data = {}
+
+        if self.supported_features & SUPPORT_BATTERY:
+            data[ATTR_BATTERY_LEVEL] = self.battery_level
+            data[ATTR_BATTERY_ICON] = self.battery_icon
+
+        if self.supported_features & SUPPORT_FAN_SPEED:
+            data[ATTR_FAN_SPEED] = self.fan_speed
+
+        return data
 
     def stop(self, **kwargs):
         """Stop the vacuum cleaner."""
@@ -276,25 +307,12 @@ class VacuumEntity(_BaseVacuum, ToggleEntity):
         )
 
     @property
-    def capability_attributes(self):
-        """Return capability attributes."""
-        if self.supported_features & SUPPORT_FAN_SPEED:
-            return {ATTR_FAN_SPEED_LIST: self.fan_speed_list}
-
-    @property
     def state_attributes(self):
         """Return the state attributes of the vacuum cleaner."""
-        data = {}
+        data = super().state_attributes
 
-        if self.status is not None:
+        if self.supported_features & SUPPORT_STATUS:
             data[ATTR_STATUS] = self.status
-
-        if self.battery_level is not None:
-            data[ATTR_BATTERY_LEVEL] = self.battery_level
-            data[ATTR_BATTERY_ICON] = self.battery_icon
-
-        if self.fan_speed is not None:
-            data[ATTR_FAN_SPEED] = self.fan_speed
 
         return data
 
@@ -367,36 +385,9 @@ class StateVacuumEntity(_BaseVacuum):
         )
 
     @property
-    def capability_attributes(self):
-        """Return capability attributes."""
-        attributes = {}
-        if self.supported_features & SUPPORT_FAN_SPEED:
-            attributes[ATTR_FAN_SPEED_LIST] = self.fan_speed_list
-
-        if self.available_rooms is not None:
-            attributes[ATTR_AVAILABLE_ROOMS] = self.available_rooms
-
-        return attributes
-
-    @property
     def support_rooms(self):
         """Boolean if cleaning rooms is supported."""
         return bool(self.supported_features & SUPPORT_ROOMS)
-
-    @property
-    def state_attributes(self):
-        """Return the state attributes of the vacuum cleaner."""
-        data = {}
-
-        if self.battery_level is not None:
-            data[ATTR_BATTERY_LEVEL] = self.battery_level
-            data[ATTR_BATTERY_ICON] = self.battery_icon
-
-        if self.fan_speed is not None:
-            data[ATTR_FAN_SPEED] = self.fan_speed
-            data[ATTR_FAN_SPEED_LIST] = self.fan_speed_list
-
-        return data
 
     def start(self):
         """Start or resume the cleaning task."""

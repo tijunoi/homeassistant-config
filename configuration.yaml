@@ -168,6 +168,11 @@ vacuum:
     token: !secret ROBOROCK_TOKEN
     name: Molly
 
+lock:
+  - platform: nuki
+    host: !secret NUKI_BRIDGE_IP
+    token: !secret NUKI_API_TOKEN
+
 timer:
   entrance:
     duration: '00:00:30'

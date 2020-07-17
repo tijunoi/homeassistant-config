@@ -408,7 +408,7 @@ class MiroboVacuum(StateVacuumEntity):
         :param List rooms: List of rooms to clean: [16,17,18]"""
 
         # Check that room exists before sending
-        available_room_ids = map(lambda room: room["id"], self.available_rooms)
+        available_room_ids = list(map(lambda room: room["id"], self.available_rooms))
         for room_id in rooms:
             if room_id not in available_room_ids:
                 raise vol.Invalid(

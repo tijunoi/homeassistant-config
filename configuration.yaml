@@ -9,7 +9,6 @@ frontend:
 http:
   ssl_certificate: !secret SSL_CERTIFICATE_PATH
   ssl_key: !secret SSL_KEY_PATH
-  base_url: !secret SERVER_BASE_URL
 
 # Text to speech
 tts:
@@ -26,17 +25,17 @@ better_dyson:
       device_ip: !secret DYSON_DEVICE_IP
 
 #Nest web api component (no WwN)
-badnest:
-  email: !secret NEST_EMAIL
-  password: !secret NEST_PASSWORD
-  region: eu
+#badnest:
+#  email: !secret NEST_EMAIL
+#  password: !secret NEST_PASSWORD
+#  region: eu
 
-climate:
-  - platform: badnest
-    scan_interval: 10
+#climate:
+#  - platform: badnest
+#    scan_interval: 10
 
-sensor:
-  - platform: badnest
+#sensor:
+#  - platform: badnest
 
 # Notification groups
 notify:
@@ -127,10 +126,10 @@ discovery:
   ignore:
     - philips_hue
     - xiaomi_gw
-hue:
-  bridges:
-    - host: !secret HUE_BRIDGE_IP
-      allow_hue_groups: false
+#hue:
+#  bridges:
+#    - host: !secret HUE_BRIDGE_IP
+#      allow_hue_groups: false
 
 media_player:
   - platform: philips_android_tv

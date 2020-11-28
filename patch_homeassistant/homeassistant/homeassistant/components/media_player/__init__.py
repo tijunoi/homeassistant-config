@@ -35,6 +35,7 @@ from homeassistant.const import (
     SERVICE_MEDIA_PREVIOUS_TRACK,
     SERVICE_MEDIA_SEEK,
     SERVICE_MEDIA_STOP,
+    SERVICE_REPEAT_SET,
     SERVICE_SHUFFLE_SET,
     SERVICE_TOGGLE,
     SERVICE_TURN_OFF,
@@ -78,6 +79,7 @@ from .const import (
     ATTR_MEDIA_PLAYLIST,
     ATTR_MEDIA_POSITION,
     ATTR_MEDIA_POSITION_UPDATED_AT,
+    ATTR_MEDIA_REPEAT,
     ATTR_MEDIA_SEASON,
     ATTR_MEDIA_SEEK_POSITION,
     ATTR_MEDIA_SERIES_TITLE,
@@ -90,6 +92,7 @@ from .const import (
     ATTR_SOUND_MODE_LIST,
     DOMAIN,
     MEDIA_CLASS_DIRECTORY,
+    REPEAT_MODES,
     SERVICE_CLEAR_PLAYLIST,
     SERVICE_PLAY_MEDIA,
     SERVICE_SELECT_SOUND_MODE,
@@ -101,6 +104,7 @@ from .const import (
     SUPPORT_PLAY,
     SUPPORT_PLAY_MEDIA,
     SUPPORT_PREVIOUS_TRACK,
+    SUPPORT_REPEAT_SET,
     SUPPORT_SEEK,
     SUPPORT_SELECT_SOUND_MODE,
     SUPPORT_SELECT_SOURCE,
@@ -179,15 +183,11 @@ MEDIA_PLAYER_MUTE_VOLUME_SCHEMA = vol.All(
 )
 
 MEDIA_PLAYER_MEDIA_SEEK_SCHEMA = vol.All(
-    cv.make_entity_service_schema(
-        {
-            vol.Required(ATTR_MEDIA_SEEK_POSITION): vol.All(
-                vol.Coerce(float), vol.Range(min=0)
-            )
-        }
-    ),
-    _rename_keys(position=ATTR_MEDIA_SEEK_POSITION),
-)
+            cv.make_entity_service_schema(
+                {vol.Required(ATTR_MEDIA_SEEK_POSITION): cv.positive_float}
+            ),
+            _rename_keys(position=ATTR_MEDIA_SEEK_POSITION),
+        )
 
 MEDIA_PLAYER_SELECT_SOURCE_SCHEMA = cv.make_entity_service_schema(
     {vol.Required(ATTR_INPUT_SOURCE): cv.string}
@@ -237,6 +237,7 @@ ATTR_TO_PROPERTY = [
     ATTR_INPUT_SOURCE,
     ATTR_SOUND_MODE,
     ATTR_MEDIA_SHUFFLE,
+    ATTR_MEDIA_REPEAT,
 ]
 
 
@@ -361,6 +362,13 @@ async def async_setup(hass, config):
         MEDIA_PLAYER_SET_SHUFFLE_SCHEMA,
         "async_set_shuffle",
         [SUPPORT_SHUFFLE_SET],
+    )
+
+    component.async_register_entity_service(
+        SERVICE_REPEAT_SET,
+        {vol.Required(ATTR_MEDIA_REPEAT): vol.In(REPEAT_MODES)},
+        "async_set_repeat",
+        [SUPPORT_REPEAT_SET],
     )
 
     component.async_register_entity_service(
@@ -554,6 +562,11 @@ class MediaPlayerEntity(Entity):
         return None
 
     @property
+    def repeat(self):
+        """Return current repeat mode."""
+        return None
+
+    @property
     def supported_features(self):
         """Flag media player features that are supported."""
         return 0
@@ -564,7 +577,7 @@ class MediaPlayerEntity(Entity):
 
     async def async_turn_on(self):
         """Turn the media player on."""
-        await self.hass.async_add_job(self.turn_on)
+        await self.hass.async_add_executor_job(self.turn_on)
 
     def turn_off(self):
         """Turn the media player off."""
@@ -572,7 +585,7 @@ class MediaPlayerEntity(Entity):
 
     async def async_turn_off(self):
         """Turn the media player off."""
-        await self.hass.async_add_job(self.turn_off)
+        await self.hass.async_add_executor_job(self.turn_off)
 
     def mute_volume(self, mute):
         """Mute the volume."""
@@ -580,7 +593,7 @@ class MediaPlayerEntity(Entity):
 
     async def async_mute_volume(self, mute):
         """Mute the volume."""
-        await self.hass.async_add_job(self.mute_volume, mute)
+        await self.hass.async_add_executor_job(self.mute_volume, mute)
 
     def set_volume_level(self, volume):
         """Set volume level, range 0..1."""
@@ -588,7 +601,7 @@ class MediaPlayerEntity(Entity):
 
     async def async_set_volume_level(self, volume):
         """Set volume level, range 0..1."""
-        await self.hass.async_add_job(self.set_volume_level, volume)
+        await self.hass.async_add_executor_job(self.set_volume_level, volume)
 
     def media_play(self):
         """Send play command."""
@@ -596,7 +609,7 @@ class MediaPlayerEntity(Entity):
 
     async def async_media_play(self):
         """Send play command."""
-        await self.hass.async_add_job(self.media_play)
+        await self.hass.async_add_executor_job(self.media_play)
 
     def media_pause(self):
         """Send pause command."""
@@ -604,7 +617,7 @@ class MediaPlayerEntity(Entity):
 
     async def async_media_pause(self):
         """Send pause command."""
-        await self.hass.async_add_job(self.media_pause)
+        await self.hass.async_add_executor_job(self.media_pause)
 
     def media_stop(self):
         """Send stop command."""
@@ -612,7 +625,7 @@ class MediaPlayerEntity(Entity):
 
     async def async_media_stop(self):
         """Send stop command."""
-        await self.hass.async_add_job(self.media_stop)
+        await self.hass.async_add_executor_job(self.media_stop)
 
     def media_previous_track(self):
         """Send previous track command."""
@@ -620,7 +633,7 @@ class MediaPlayerEntity(Entity):
 
     async def async_media_previous_track(self):
         """Send previous track command."""
-        await self.hass.async_add_job(self.media_previous_track)
+        await self.hass.async_add_executor_job(self.media_previous_track)
 
     def media_next_track(self):
         """Send next track command."""
@@ -628,7 +641,7 @@ class MediaPlayerEntity(Entity):
 
     async def async_media_next_track(self):
         """Send next track command."""
-        await self.hass.async_add_job(self.media_next_track)
+        await self.hass.async_add_executor_job(self.media_next_track)
 
     def media_seek(self, position):
         """Send seek command."""
@@ -636,7 +649,7 @@ class MediaPlayerEntity(Entity):
 
     async def async_media_seek(self, position):
         """Send seek command."""
-        await self.hass.async_add_job(self.media_seek, position)
+        await self.hass.async_add_executor_job(self.media_seek, position)
 
     def play_media(self, media_type, media_id, **kwargs):
         """Play a piece of media."""
@@ -644,7 +657,7 @@ class MediaPlayerEntity(Entity):
 
     async def async_play_media(self, media_type, media_id, **kwargs):
         """Play a piece of media."""
-        await self.hass.async_add_job(
+        await self.hass.async_add_executor_job(
             ft.partial(self.play_media, media_type, media_id, **kwargs)
         )
 
@@ -654,7 +667,7 @@ class MediaPlayerEntity(Entity):
 
     async def async_select_source(self, source):
         """Select input source."""
-        await self.hass.async_add_job(self.select_source, source)
+        await self.hass.async_add_executor_job(self.select_source, source)
 
     def select_sound_mode(self, sound_mode):
         """Select sound mode."""
@@ -662,7 +675,7 @@ class MediaPlayerEntity(Entity):
 
     async def async_select_sound_mode(self, sound_mode):
         """Select sound mode."""
-        await self.hass.async_add_job(self.select_sound_mode, sound_mode)
+        await self.hass.async_add_executor_job(self.select_sound_mode, sound_mode)
 
     def clear_playlist(self):
         """Clear players playlist."""
@@ -670,7 +683,7 @@ class MediaPlayerEntity(Entity):
 
     async def async_clear_playlist(self):
         """Clear players playlist."""
-        await self.hass.async_add_job(self.clear_playlist)
+        await self.hass.async_add_executor_job(self.clear_playlist)
 
     def set_shuffle(self, shuffle):
         """Enable/disable shuffle mode."""
@@ -678,7 +691,15 @@ class MediaPlayerEntity(Entity):
 
     async def async_set_shuffle(self, shuffle):
         """Enable/disable shuffle mode."""
-        await self.hass.async_add_job(self.set_shuffle, shuffle)
+        await self.hass.async_add_executor_job(self.set_shuffle, shuffle)
+
+    def set_repeat(self, repeat):
+        """Set repeat mode."""
+        raise NotImplementedError()
+
+    async def async_set_repeat(self, repeat):
+        """Set repeat mode."""
+        await self.hass.async_add_executor_job(self.set_repeat, repeat)
 
     def homekit_send_remote_key(self, key):
         """Send key to device. Map key from Homekit keys to device key."""
@@ -686,7 +707,7 @@ class MediaPlayerEntity(Entity):
 
     async def async_homekit_send_remote_key(self, key):
         """Send key to device. Map key from Homekit keys to device key."""
-        await self.hass.async_add_job(self.homekit_send_remote_key, key)
+        await self.hass.async_add_executor_job(self.homekit_send_remote_key, key)
 
     # No need to overwrite these.
     @property
@@ -763,7 +784,7 @@ class MediaPlayerEntity(Entity):
         """Toggle the power on the media player."""
         if hasattr(self, "toggle"):
             # pylint: disable=no-member
-            await self.hass.async_add_job(self.toggle)
+            await self.hass.async_add_executor_job(self.toggle)
             return
 
         if self.state in [STATE_OFF, STATE_IDLE]:
@@ -778,7 +799,7 @@ class MediaPlayerEntity(Entity):
         """
         if hasattr(self, "volume_up"):
             # pylint: disable=no-member
-            await self.hass.async_add_job(self.volume_up)
+            await self.hass.async_add_executor_job(self.volume_up)
             return
 
         if self.volume_level < 1 and self.supported_features & SUPPORT_VOLUME_SET:
@@ -791,7 +812,7 @@ class MediaPlayerEntity(Entity):
         """
         if hasattr(self, "volume_down"):
             # pylint: disable=no-member
-            await self.hass.async_add_job(self.volume_down)
+            await self.hass.async_add_executor_job(self.volume_down)
             return
 
         if self.volume_level > 0 and self.supported_features & SUPPORT_VOLUME_SET:
@@ -801,7 +822,7 @@ class MediaPlayerEntity(Entity):
         """Play or pause the media player."""
         if hasattr(self, "media_play_pause"):
             # pylint: disable=no-member
-            await self.hass.async_add_job(self.media_play_pause)
+            await self.hass.async_add_executor_job(self.media_play_pause)
             return
 
         if self.state == STATE_PLAYING:

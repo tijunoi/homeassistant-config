@@ -409,9 +409,13 @@ class MiroboVacuum(StateVacuumEntity):
             "Unable to start the vacuum for a spot clean-up: %s", self._vacuum.spot
         )
 
-    async def async_clean_room(self, rooms, **kwargs):
+    async def async_clean_room(self, rooms, iterations=1, clean_order=1, **kwargs):
         """Perform a room clean-up.
-        :param List rooms: List of rooms to clean: [16,17,18]"""
+        :param List rooms: List of rooms to clean: [16,17,18]
+        :param iterations: Number of times to clean each room. 1, 2 or 3.
+        :param clean_order: 1 for same order as declared in 'rooms'. ? other modes unknown """
+
+        params = [{"segments": rooms, "repeat": iterations, "clean_order_mode": clean_order}]
 
         # Check that room exists before sending
         available_room_ids = list(map(lambda room: room["id"], self.available_rooms))
@@ -423,7 +427,7 @@ class MiroboVacuum(StateVacuumEntity):
         await self._try_command(
             "Unable to start the vacuum for a room clean-up: %s",
             self._vacuum.segment_clean,
-            rooms,
+            params,
             **kwargs,
         )
 

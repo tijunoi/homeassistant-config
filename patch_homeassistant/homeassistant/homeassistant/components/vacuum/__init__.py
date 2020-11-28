@@ -107,7 +107,11 @@ async def async_setup(hass, config):
     component.async_register_entity_service(SERVICE_CLEAN_SPOT, {}, "async_clean_spot")
     component.async_register_entity_service(
         SERVICE_CLEAN_ROOM,
-        {vol.Required("rooms"): cv.ensure_list},
+        {
+            vol.Required("rooms"): cv.ensure_list,
+            vol.Optional("iterations"): cv.positive_int,
+            vol.Optional("clean_order"): cv.positive_int  # 1 for 'rooms' list order, ? rest of modes
+        },
         "async_clean_room",
         [SUPPORT_ROOMS],
     )
@@ -236,18 +240,18 @@ class _BaseVacuum(Entity):
         """
         await self.hass.async_add_executor_job(partial(self.clean_spot, **kwargs))
 
-    def clean_room(self, rooms, **kwargs):
+    def clean_room(self, rooms, iterations=1, clean_order=1, **kwargs):
         """Perform a room clean-up."""
         raise NotImplementedError()
 
-    async def async_clean_room(self, rooms, **kwargs):
+    async def async_clean_room(self, rooms, iterations=1, clean_order=1, **kwargs):
         """Perform a room clean-up.
 
         This method must be run in the event loop.
         """
 
         await self.hass.async_add_executor_job(
-            partial(self.clean_room, rooms, **kwargs)
+            partial(self.clean_room, rooms, iterations=iterations, clean_order=clean_order, **kwargs)
         )
 
     def locate(self, **kwargs):

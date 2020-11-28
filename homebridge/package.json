@@ -5,7 +5,7 @@
     "homebridge-dummy": "^0.4.0",
     "homebridge-hue": "^0.11.50",
     "homebridge-nest": "^4.4.0",
-    "homebridge-nuki": "^0.7.5",
+    "homebridge-nuki": "^0.10.5",
     "homebridge-videodoorbell": "^0.2.9"
   }
 }

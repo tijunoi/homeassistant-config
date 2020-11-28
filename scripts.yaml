@@ -2,7 +2,7 @@ start_dishwasher_timer:
   alias: "Start dishwasher timer"
   sequence:
       - service: timer.start
-        data_template:
+        data:
           entity_id: timer.dishwasher
           duration: >
             {{ states('sensor.dishwasher_current_program_duration')}}

@@ -23,7 +23,7 @@
         state: 'off'
   action:
     - service: light.turn_on
-      data_template:
+      data:
         entity_id:
           - light.entrance_1
           - light.entrance_2

@@ -53,3 +53,6 @@ homebridge/*
 .DS_Store
 .AppleDouble
 .LSOverride
+
+# Duplicati config folder
+duplicati/*

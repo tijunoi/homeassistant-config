@@ -87,4 +87,21 @@
   action:
       - service: rest_command.assistant_broadcast
         data:
-          command: "Dishwasher has finished." 
+          command: "Dishwasher has finished."
+ 
+- id: '1607677760156'
+  alias: 'Office light remote: Toggle light'
+  description: ''
+  trigger:
+  - device_id: e12b733b0f9f47bfb6147d27781abc28
+    domain: deconz
+    platform: device
+    type: remote_button_short_press
+    subtype: turn_on
+  condition: []
+  action:
+  - type: toggle
+    device_id: 9e46d317a9c7e084ee9c88e847ad7c6f
+    entity_id: light.office
+    domain: light
+  mode: single

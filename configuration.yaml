@@ -30,6 +30,12 @@ better_dyson:
 #  password: !secret NEST_PASSWORD
 #  region: eu
 
+nest:
+  client_id: !secret NEST_SDM_CLIENT_ID
+  client_secret: !secret NEST_SDM_CLIENT_SECRET
+  project_id: !secret NEST_SDM_PROJECT_ID
+  subscriber_id: !secret NEST_SDM_SUBSCRIBER_ID
+
 #climate:
 #  - platform: badnest
 #    scan_interval: 10
@@ -43,7 +49,7 @@ notify:
     platform: group
     services:
       - service: mobile_app_nils_iphone_xs
-      - service: mobile_app_steve_s_iphonex
+      - service: mobile_app_steves_iphone_12
 
 # Google Assistant relay commands
 rest_command:
@@ -84,6 +90,7 @@ homekit:
       - light.living_room_table
       - light.christmas_balcony
       - light.christmas_tree
+      - light.office
   entity_config:
     alarm_control_panel.home_alarm:
       code: !secret ALARM_CODE

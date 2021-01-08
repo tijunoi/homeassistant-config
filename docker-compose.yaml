@@ -86,3 +86,16 @@ services:
         restart: always
         volumes:
             - './valetudo-mapper/config.json:/app/config.json'
+    backup:
+        container_name: backup
+        image: linuxserver/duplicati
+        restart: always
+        environment:
+         - PUID=1001
+         - PGID=1001
+         - TZ=Europe/Madrid
+        volumes:
+         - '/home/homeassistant/.homeassistant/duplicati:/config'
+         - '/home/homeassistant:/source'
+        ports:
+         - 8200:8200

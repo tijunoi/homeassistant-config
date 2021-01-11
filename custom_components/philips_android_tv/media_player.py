@@ -281,8 +281,8 @@ class PhilipsTV(MediaPlayerDevice):
         else:
             self._tv.send_key('Rewind')
 
-    def homekit_send_remote_key(self, key):
-        philips_key = HOMEKIT_PHILIPS_TV_KEY_MAP.get(key)
+    def homekit_send_remote_key(self, key_name):
+        philips_key = HOMEKIT_PHILIPS_TV_KEY_MAP.get(key_name)
         self.send_key(philips_key)
 
     @property

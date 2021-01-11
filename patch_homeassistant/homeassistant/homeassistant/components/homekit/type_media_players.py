@@ -446,7 +446,7 @@ class TelevisionMediaPlayer(HomeAccessory):
             self.call_service(DOMAIN, service, params)
         else:
             #Custom: call remote key service
-            params = {ATTR_ENTITY_ID: self.entity_id, ATTR_COMMAND: key_name}
+            params = {ATTR_ENTITY_ID: self.entity_id, ATTR_KEY_NAME: key_name}
             self.call_service(DOMAIN, SERVICE_MEDIA_HOMEKIT_SEND_REMOTE_KEY, params)
 
             # Unhandled keys can be handled by listening to the event bus

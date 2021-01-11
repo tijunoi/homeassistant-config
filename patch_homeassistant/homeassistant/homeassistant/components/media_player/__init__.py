@@ -210,7 +210,7 @@ MEDIA_PLAYER_SET_SHUFFLE_SCHEMA = cv.make_entity_service_schema(
 )
 
 MEDIA_PLAYER_SEND_REMOTE_KEY_SCHEMA = cv.make_entity_service_schema(
-    {vol.Required(ATTR_COMMAND): cv.positive_int}
+    {vol.Required("key_name"): cv.string}
 )
 
 
@@ -709,13 +709,13 @@ class MediaPlayerEntity(Entity):
         """Set repeat mode."""
         await self.hass.async_add_executor_job(self.set_repeat, repeat)
 
-    def homekit_send_remote_key(self, key):
+    def homekit_send_remote_key(self, key_name):
         """Send key to device. Map key from Homekit keys to device key."""
         raise NotImplementedError()
 
-    async def async_homekit_send_remote_key(self, key):
+    async def async_homekit_send_remote_key(self, key_name):
         """Send key to device. Map key from Homekit keys to device key."""
-        await self.hass.async_add_executor_job(self.homekit_send_remote_key, key)
+        await self.hass.async_add_executor_job(self.homekit_send_remote_key, key_name)
 
     # No need to overwrite these.
     @property

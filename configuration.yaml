@@ -82,7 +82,6 @@ homekit:
     include_entities:
       - person.nil
       - person.steve
-      - media_player.philipstv
     exclude_entities:
       - light.living_room_sofa
       - light.bedroom_bed
@@ -91,6 +90,7 @@ homekit:
       - light.christmas_balcony
       - light.christmas_tree
       - light.office
+      - media_player.philipstv
   entity_config:
     alarm_control_panel.home_alarm:
       code: !secret ALARM_CODE
@@ -206,6 +206,11 @@ sensor dishwasher_current_program_duration:
         {% set state = states('input_select.dishwasher_programs') %}
         {% set duration = mapper[state] if state in mapper %}
         {{ duration }}
+
+logger:
+  default: info
+  logs:
+    homeassistant.components.homekit: debug
 
 group: !include groups.yaml
 automation: !include_dir_merge_list automations

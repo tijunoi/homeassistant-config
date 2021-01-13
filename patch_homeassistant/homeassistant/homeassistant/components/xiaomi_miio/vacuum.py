@@ -226,6 +226,7 @@ class MiroboVacuum(StateVacuumEntity):
         self._available = False
 
         self._room_mapping = None
+        self._active_rooms = None
 
         self.consumable_state = None
         self.clean_history = None
@@ -297,6 +298,10 @@ class MiroboVacuum(StateVacuumEntity):
     @property
     def available_rooms(self):
         return self._room_mapping
+
+    @property
+    def active_rooms(self):
+        return self._active_rooms
 
     @property
     def device_state_attributes(self):
@@ -372,6 +377,7 @@ class MiroboVacuum(StateVacuumEntity):
         await self._try_command(
             "Unable to start the vacuum: %s", self._vacuum.resume_or_start
         )
+        self._active_rooms = self.available_rooms
 
     async def async_pause(self):
         """Pause the cleaning task."""
@@ -430,6 +436,7 @@ class MiroboVacuum(StateVacuumEntity):
             params,
             **kwargs,
         )
+        self._active_rooms = [room for room in self.available_rooms if room["id"] in rooms]
 
     async def async_locate(self, **kwargs):
         """Locate the vacuum cleaner."""
@@ -520,6 +527,8 @@ class MiroboVacuum(StateVacuumEntity):
                     for room in self._vacuum.get_room_mapping()
                 ]
                 self._room_mapping = room_mapping
+                if int(self.vacuum_state.state_code) in [4, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16, 17, 100, 101]:
+                    self._active_rooms = None
 
             self._available = True
         except (OSError, DeviceException) as exc:

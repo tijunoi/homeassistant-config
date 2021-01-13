@@ -595,13 +595,25 @@ class StartStopTrait(_Trait):
         return {
             "isRunning": self.state.state == vacuum.STATE_CLEANING,
             "isPaused": self.state.state == vacuum.STATE_PAUSED,
+            "activeZones": list(
+                map(
+                    lambda r: r["name"],
+                    self.state.attributes.get(vacuum.ATTR_ACTIVE_ROOMS, []),
+                )
+            )
         }
 
     async def execute(self, command, data, params, challenge):
         """Execute a StartStop command."""
         if command == COMMAND_STARTSTOP:
             if params["start"]:
-                if params.get("zone") is not None:
+                if params.get("zone") is not None or params.get("multipleZones") is not None:
+                    zones_to_clean = []
+                    if params.get("zone") is not None:
+                        zones_to_clean.append(params.get("zone"))
+                    else:
+                        zones_to_clean.extend(params.get("multipleZones"))
+
                     available_rooms = self.state.attributes.get(
                         vacuum.ATTR_AVAILABLE_ROOMS
                     )
@@ -609,7 +621,7 @@ class StartStopTrait(_Trait):
                     room_ids = [
                         room["id"]
                         for room in available_rooms
-                        if room["name"] == params.get("zone")
+                        if room["name"] in zones_to_clean
                     ]
 
                     await self.hass.services.async_call(

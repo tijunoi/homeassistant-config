@@ -40,6 +40,7 @@ ATTR_FAN_SPEED_LIST = "fan_speed_list"
 ATTR_PARAMS = "params"
 ATTR_STATUS = "status"
 ATTR_AVAILABLE_ROOMS = "available_rooms"
+ATTR_ACTIVE_ROOMS = "active_rooms"
 
 SERVICE_CLEAN_SPOT = "clean_spot"
 SERVICE_CLEAN_ROOM = "clean_room"
@@ -182,6 +183,11 @@ class _BaseVacuum(Entity):
         raise NotImplementedError()
 
     @property
+    def active_rooms(self):
+        """Get the list of available rooms for vacuum room cleaning."""
+        raise NotImplementedError()
+
+    @property
     def capability_attributes(self):
         """Return capability attributes."""
         attributes = {}
@@ -204,6 +210,9 @@ class _BaseVacuum(Entity):
 
         if self.supported_features & SUPPORT_FAN_SPEED:
             data[ATTR_FAN_SPEED] = self.fan_speed
+
+        if self.supported_features & SUPPORT_ROOMS:
+            data[ATTR_ACTIVE_ROOMS] = self.active_rooms
 
         return data
 

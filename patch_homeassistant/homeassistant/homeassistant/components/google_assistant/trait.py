@@ -584,7 +584,7 @@ class StartStopTrait(_Trait):
             attributes["availableZones"] = list(
                 map(
                     lambda r: r["name"],
-                    self.state.attributes.get(vacuum.ATTR_AVAILABLE_ROOMS, []),
+                    self.state.attributes.get(vacuum.ATTR_AVAILABLE_ROOMS) or [],
                 )
             )
 
@@ -598,7 +598,7 @@ class StartStopTrait(_Trait):
             "activeZones": list(
                 map(
                     lambda r: r["name"],
-                    self.state.attributes.get(vacuum.ATTR_ACTIVE_ROOMS, []),
+                    self.state.attributes.get(vacuum.ATTR_ACTIVE_ROOMS) or [],
                 )
             )
         }
@@ -617,7 +617,6 @@ class StartStopTrait(_Trait):
                     available_rooms = self.state.attributes.get(
                         vacuum.ATTR_AVAILABLE_ROOMS
                     )
-                    # It will be only 1 room but may support more in the future
                     room_ids = [
                         room["id"]
                         for room in available_rooms

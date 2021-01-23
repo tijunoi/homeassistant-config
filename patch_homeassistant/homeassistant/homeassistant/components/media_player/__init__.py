@@ -7,7 +7,7 @@ import functools as ft
 import hashlib
 import logging
 import secrets
-from typing import List, Optional
+from typing import List, Optional, Tuple
 from urllib.parse import urlparse
 
 from aiohttp import web
@@ -25,10 +25,12 @@ from homeassistant.components.websocket_api.const import (
     ERR_UNKNOWN_ERROR,
 )
 from homeassistant.const import (
+    ATTR_COMMAND,
     HTTP_INTERNAL_SERVER_ERROR,
     HTTP_NOT_FOUND,
     HTTP_OK,
     HTTP_UNAUTHORIZED,
+    SERVICE_MEDIA_HOMEKIT_SEND_REMOTE_KEY,
     SERVICE_MEDIA_NEXT_TRACK,
     SERVICE_MEDIA_PAUSE,
     SERVICE_MEDIA_PLAY,
@@ -45,11 +47,9 @@ from homeassistant.const import (
     SERVICE_VOLUME_MUTE,
     SERVICE_VOLUME_SET,
     SERVICE_VOLUME_UP,
-    SERVICE_MEDIA_HOMEKIT_SEND_REMOTE_KEY,
     STATE_IDLE,
     STATE_OFF,
     STATE_PLAYING,
-    ATTR_COMMAND,
 )
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 import homeassistant.helpers.config_validation as cv
@@ -100,6 +100,7 @@ from .const import (
     SERVICE_SELECT_SOURCE,
     SUPPORT_BROWSE_MEDIA,
     SUPPORT_CLEAR_PLAYLIST,
+    SUPPORT_HOMEKIT_REMOTE,
     SUPPORT_NEXT_TRACK,
     SUPPORT_PAUSE,
     SUPPORT_PLAY,
@@ -116,7 +117,6 @@ from .const import (
     SUPPORT_VOLUME_MUTE,
     SUPPORT_VOLUME_SET,
     SUPPORT_VOLUME_STEP,
-    SUPPORT_HOMEKIT_REMOTE,
 )
 from .errors import BrowseError
 
@@ -142,6 +142,7 @@ DEVICE_CLASS_RECEIVER = "receiver"
 DEVICE_CLASSES = [DEVICE_CLASS_TV, DEVICE_CLASS_SPEAKER, DEVICE_CLASS_RECEIVER]
 
 DEVICE_CLASSES_SCHEMA = vol.All(vol.Lower, vol.In(DEVICE_CLASSES))
+
 
 def _rename_keys(**keys):
     """Create validator that renames keys.
@@ -176,18 +177,16 @@ MEDIA_PLAYER_PLAY_MEDIA_SCHEMA = {
 }
 
 MEDIA_PLAYER_MUTE_VOLUME_SCHEMA = vol.All(
-    cv.make_entity_service_schema(
-        {vol.Required(ATTR_MEDIA_VOLUME_MUTED): cv.boolean}
-    ),
+    cv.make_entity_service_schema({vol.Required(ATTR_MEDIA_VOLUME_MUTED): cv.boolean}),
     _rename_keys(mute=ATTR_MEDIA_VOLUME_MUTED),
 )
 
 MEDIA_PLAYER_MEDIA_SEEK_SCHEMA = vol.All(
-            cv.make_entity_service_schema(
-                {vol.Required(ATTR_MEDIA_SEEK_POSITION): cv.positive_float}
-            ),
-            _rename_keys(position=ATTR_MEDIA_SEEK_POSITION),
-        )
+    cv.make_entity_service_schema(
+        {vol.Required(ATTR_MEDIA_SEEK_POSITION): cv.positive_float}
+    ),
+    _rename_keys(position=ATTR_MEDIA_SEEK_POSITION),
+)
 
 MEDIA_PLAYER_SELECT_SOURCE_SCHEMA = cv.make_entity_service_schema(
     {vol.Required(ATTR_INPUT_SOURCE): cv.string}
@@ -475,8 +474,11 @@ class MediaPlayerEntity(Entity):
         return await self._async_fetch_image_from_cache(url)
 
     async def async_get_browse_image(
-        self, media_content_type, media_content_id, media_image_id=None
-    ):
+        self,
+        media_content_type: str,
+        media_content_id: str,
+        media_image_id: Optional[str] = None,
+    ) -> Tuple[Optional[str], Optional[str]]:
         """
         Optionally fetch internally accessible image for media browser.
 
@@ -960,8 +962,11 @@ class MediaPlayerEntity(Entity):
         return content, content_type
 
     def get_browse_image_url(
-        self, media_content_type, media_content_id, media_image_id=None
-    ):
+        self,
+        media_content_type: str,
+        media_content_id: str,
+        media_image_id: Optional[str] = None,
+    ) -> str:
         """Generate an url for a media browser image."""
         url_path = (
             f"/api/media_player_proxy/{self.entity_id}/browse_media"

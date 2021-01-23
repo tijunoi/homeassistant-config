@@ -18,8 +18,10 @@ from homeassistant.components.media_player import (
     SUPPORT_VOLUME_STEP,
 )
 from homeassistant.const import (
+    ATTR_COMMAND,
     ATTR_ENTITY_ID,
     ATTR_SUPPORTED_FEATURES,
+    SERVICE_MEDIA_HOMEKIT_SEND_REMOTE_KEY,
     SERVICE_MEDIA_PAUSE,
     SERVICE_MEDIA_PLAY,
     SERVICE_MEDIA_PLAY_PAUSE,
@@ -35,8 +37,6 @@ from homeassistant.const import (
     STATE_PLAYING,
     STATE_STANDBY,
     STATE_UNKNOWN,
-    ATTR_COMMAND,
-    SERVICE_MEDIA_HOMEKIT_SEND_REMOTE_KEY,
 )
 from homeassistant.core import callback
 
@@ -445,7 +445,7 @@ class TelevisionMediaPlayer(HomeAccessory):
             params = {ATTR_ENTITY_ID: self.entity_id}
             self.call_service(DOMAIN, service, params)
         else:
-            #Custom: call remote key service
+            # Custom: call remote key service
             params = {ATTR_ENTITY_ID: self.entity_id, ATTR_KEY_NAME: key_name}
             self.call_service(DOMAIN, SERVICE_MEDIA_HOMEKIT_SEND_REMOTE_KEY, params)
 

@@ -16,11 +16,11 @@ from homeassistant.components.vacuum import (
     STATE_RETURNING,
     SUPPORT_BATTERY,
     SUPPORT_CLEAN_SPOT,
-    SUPPORT_ROOMS,
     SUPPORT_FAN_SPEED,
     SUPPORT_LOCATE,
     SUPPORT_PAUSE,
     SUPPORT_RETURN_HOME,
+    SUPPORT_ROOMS,
     SUPPORT_SEND_COMMAND,
     SUPPORT_START,
     SUPPORT_STATE,
@@ -419,24 +419,26 @@ class MiroboVacuum(StateVacuumEntity):
         """Perform a room clean-up.
         :param List rooms: List of rooms to clean: [16,17,18]
         :param iterations: Number of times to clean each room. 1, 2 or 3.
-        :param clean_order: 1 for same order as declared in 'rooms'. ? other modes unknown """
+        :param clean_order: 1 for same order as declared in 'rooms'. ? other modes unknown"""
 
-        params = [{"segments": rooms, "repeat": iterations, "clean_order_mode": clean_order}]
+        params = [
+            {"segments": rooms, "repeat": iterations, "clean_order_mode": clean_order}
+        ]
 
         # Check that room exists before sending
         available_room_ids = list(map(lambda room: room["id"], self.available_rooms))
         for room_id in rooms:
             if room_id not in available_room_ids:
-                raise vol.Invalid(
-                    "Tried to clean a non available room, {}".format(room_id)
-                )
+                raise vol.Invalid(f"Tried to clean a non available room, {room_id}")
         await self._try_command(
             "Unable to start the vacuum for a room clean-up: %s",
             self._vacuum.segment_clean,
             params,
             **kwargs,
         )
-        self._active_rooms = [room for room in self.available_rooms if room["id"] in rooms]
+        self._active_rooms = [
+            room for room in self.available_rooms if room["id"] in rooms
+        ]
 
     async def async_locate(self, **kwargs):
         """Locate the vacuum cleaner."""
@@ -527,7 +529,22 @@ class MiroboVacuum(StateVacuumEntity):
                     for room in self._vacuum.get_room_mapping()
                 ]
                 self._room_mapping = room_mapping
-                if int(self.vacuum_state.state_code) in [4, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16, 17, 100, 101]:
+                if int(self.vacuum_state.state_code) in [
+                    4,
+                    6,
+                    7,
+                    8,
+                    9,
+                    11,
+                    12,
+                    13,
+                    14,
+                    15,
+                    16,
+                    17,
+                    100,
+                    101,
+                ]:
                     self._active_rooms = None
 
             self._available = True

@@ -111,7 +111,9 @@ async def async_setup(hass, config):
         {
             vol.Required("rooms"): cv.ensure_list,
             vol.Optional("iterations"): cv.positive_int,
-            vol.Optional("clean_order"): cv.positive_int  # 1 for 'rooms' list order, ? rest of modes
+            vol.Optional(
+                "clean_order"
+            ): cv.positive_int,  # 1 for 'rooms' list order, ? rest of modes
         },
         "async_clean_room",
         [SUPPORT_ROOMS],
@@ -260,7 +262,13 @@ class _BaseVacuum(Entity):
         """
 
         await self.hass.async_add_executor_job(
-            partial(self.clean_room, rooms, iterations=iterations, clean_order=clean_order, **kwargs)
+            partial(
+                self.clean_room,
+                rooms,
+                iterations=iterations,
+                clean_order=clean_order,
+                **kwargs,
+            )
         )
 
     def locate(self, **kwargs):

@@ -24,24 +24,11 @@ better_dyson:
     - device_id: !secret DYSON_DEVICE_ID
       device_ip: !secret DYSON_DEVICE_IP
 
-#Nest web api component (no WwN)
-#badnest:
-#  email: !secret NEST_EMAIL
-#  password: !secret NEST_PASSWORD
-#  region: eu
-
 nest:
   client_id: !secret NEST_SDM_CLIENT_ID
   client_secret: !secret NEST_SDM_CLIENT_SECRET
   project_id: !secret NEST_SDM_PROJECT_ID
   subscriber_id: !secret NEST_SDM_SUBSCRIBER_ID
-
-#climate:
-#  - platform: badnest
-#    scan_interval: 10
-
-#sensor:
-#  - platform: badnest
 
 # Notification groups
 notify:
@@ -168,12 +155,6 @@ alarm_control_panel:
     armed_away:
       arming_time: 10
       delay_time: 10
-
-vacuum:
-  - platform: xiaomi_miio
-    host: !secret ROBOROCK_IP
-    token: !secret ROBOROCK_TOKEN
-    name: Molly
 
 lock:
   - platform: nuki

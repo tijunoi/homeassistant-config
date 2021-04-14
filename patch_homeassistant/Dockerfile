@@ -1,3 +1,3 @@
-ARG IMAGE=homeassistant/raspberrypi3-homeassistant:2021.2.3
+ARG IMAGE=homeassistant/raspberrypi3-homeassistant:2021.3.4
 FROM $IMAGE
 COPY homeassistant/ /usr/src/homeassistant/

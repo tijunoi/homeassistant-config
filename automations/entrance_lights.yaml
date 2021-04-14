@@ -29,7 +29,7 @@
           - light.entrance_2
           - light.entrance_3
         brightness_pct: >
-          {% if now().hour < 7 or now().hour >= 23 -%}
+          {% if now().hour < 8 or now().hour >= 23 -%}
             10
           {% else %}
             100

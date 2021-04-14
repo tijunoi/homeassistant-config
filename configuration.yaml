@@ -82,6 +82,7 @@ homekit:
     include_entities:
       - person.nil
       - person.steve
+      - input_boolean.in_a_meeting_nil
     exclude_entities:
       - light.living_room_sofa
       - light.bedroom_bed
@@ -208,9 +209,7 @@ sensor dishwasher_current_program_duration:
         {{ duration }}
 
 logger:
-  default: info
-  logs:
-    homeassistant.components.homekit: debug
+  default: warn
 
 group: !include groups.yaml
 automation: !include_dir_merge_list automations

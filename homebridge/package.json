@@ -3,7 +3,7 @@
   "description": "This file keeps track of which plugins should be installed.",
   "dependencies": {
     "homebridge-hue": "^0.12.12",
-    "homebridge-nest": "^4.5.1",
+    "homebridge-nest": "^4.5.3",
     "homebridge-nuki": "^0.10.5",
     "homebridge-videodoorbell": "^0.2.9",
     "homebridge-ring": "^9.14.0"

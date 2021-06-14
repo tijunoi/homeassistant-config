@@ -78,8 +78,6 @@
         message: >
           The alarm has been triggered by {{ trigger.to_state.attributes.friendly_name }}
         data:
-          apns_headers:
-            'apns-collapse-id': 'home_alarm'
           push:
             badge: 1
             sound:
@@ -101,8 +99,6 @@
         data:
           push:
             badge: 1
-          apns_headers:
-            'apns-collapse-id': 'home_alarm'
 
 - alias: 'Clear alarm notification when disarmed'
   trigger:

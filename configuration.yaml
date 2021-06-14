@@ -79,6 +79,9 @@ homekit:
       - light.christmas_tree
       - light.office
       - media_player.philipstv
+      - light.on_off_plug_1
+      - light.configuration_tool_2
+      - light.mi_desk_lamp
   entity_config:
     alarm_control_panel.home_alarm:
       code: !secret ALARM_CODE
@@ -155,11 +158,6 @@ alarm_control_panel:
     armed_away:
       arming_time: 10
       delay_time: 10
-
-lock:
-  - platform: nuki
-    host: !secret NUKI_BRIDGE_IP
-    token: !secret NUKI_API_TOKEN
 
 timer:
   entrance:

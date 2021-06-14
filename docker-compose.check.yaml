@@ -10,5 +10,5 @@ services:
             dockerfile: ./Dockerfile
             context: patch_homeassistant/
             args:
-              IMAGE: homeassistant/home-assistant:2021.4.4
+              IMAGE: homeassistant/home-assistant:2021.5.5
         command: python -m homeassistant --script check_config --config /config --info all

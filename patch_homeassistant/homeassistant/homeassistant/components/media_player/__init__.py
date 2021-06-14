@@ -150,6 +150,7 @@ DEVICE_CLASSES = [DEVICE_CLASS_TV, DEVICE_CLASS_SPEAKER, DEVICE_CLASS_RECEIVER]
 
 DEVICE_CLASSES_SCHEMA = vol.All(vol.Lower, vol.In(DEVICE_CLASSES))
 
+
 def _rename_keys(**keys):
     """Create validator that renames keys.
 
@@ -183,18 +184,16 @@ MEDIA_PLAYER_PLAY_MEDIA_SCHEMA = {
 }
 
 MEDIA_PLAYER_MUTE_VOLUME_SCHEMA = vol.All(
-    cv.make_entity_service_schema(
-        {vol.Required(ATTR_MEDIA_VOLUME_MUTED): cv.boolean}
-    ),
+    cv.make_entity_service_schema({vol.Required(ATTR_MEDIA_VOLUME_MUTED): cv.boolean}),
     _rename_keys(mute=ATTR_MEDIA_VOLUME_MUTED),
 )
 
 MEDIA_PLAYER_MEDIA_SEEK_SCHEMA = vol.All(
-            cv.make_entity_service_schema(
-                {vol.Required(ATTR_MEDIA_SEEK_POSITION): cv.positive_float}
-            ),
-            _rename_keys(position=ATTR_MEDIA_SEEK_POSITION),
-        )
+    cv.make_entity_service_schema(
+        {vol.Required(ATTR_MEDIA_SEEK_POSITION): cv.positive_float}
+    ),
+    _rename_keys(position=ATTR_MEDIA_SEEK_POSITION),
+)
 
 MEDIA_PLAYER_SELECT_SOURCE_SCHEMA = cv.make_entity_service_schema(
     {vol.Required(ATTR_INPUT_SOURCE): cv.string}
@@ -341,7 +340,7 @@ async def async_setup(hass, config):
     )
     component.async_register_entity_service(
         SERVICE_JOIN,
-        {vol.Required(ATTR_GROUP_MEMBERS): list},
+        {vol.Required(ATTR_GROUP_MEMBERS): vol.All(cv.ensure_list, [cv.entity_id])},
         "async_join_players",
         [SUPPORT_GROUPING],
     )

@@ -1,4 +1,5 @@
-version: 2
+## this is the circleci file that was used in rpi 3 to deploy changes. Disabled by changing the folder name, here for reference purposes
+# version: 2
 jobs:
   check-config:
     machine: true

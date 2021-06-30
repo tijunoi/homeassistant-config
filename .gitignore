@@ -5,7 +5,7 @@
 !*.yaml
 !.gitignore
 !*.md
-!.circleci/config.yml
+!.config-circle-ci/config.yml
 
 # Ignore folders.
 .storage

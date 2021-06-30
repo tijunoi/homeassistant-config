@@ -16,13 +16,13 @@ tts:
     base_url: !secret TTS_BASE_URL
 
 # Use custom dyson component
-better_dyson:
-  username: !secret DYSON_USERNAME
-  password: !secret DYSON_PASSWORD
-  language: !secret DYSON_COUNTRY
-  devices:
-    - device_id: !secret DYSON_DEVICE_ID
-      device_ip: !secret DYSON_DEVICE_IP
+# better_dyson:
+#   username: !secret DYSON_USERNAME
+#   password: !secret DYSON_PASSWORD
+#   language: !secret DYSON_COUNTRY
+#   devices:
+#     - device_id: !secret DYSON_DEVICE_ID
+#       device_ip: !secret DYSON_DEVICE_IP
 
 nest:
   client_id: !secret NEST_SDM_CLIENT_ID
@@ -61,6 +61,26 @@ rest_command:
 shell_command:
   restart_homebridge: docker restart homebridge
 
+switch:
+  - platform: broadlink
+    mac: "a0:43:b0:5e:92:ee"
+    switches:
+      - name: Bedroom Aircon Power
+        command_on: "JgBQAAABJpQRFBISExMSExETExMRFBE4EjgTOBI3EjgTNxI4EjcTExITERMTOBI3EjgTEhIUETgTNxM3EhMSExITEzcROBMTEgAFIAABKEoSAA0F"
+        command_off: "JgBQAAABJZUSFBAUEhQQFBETExMSFBA5ETgTOBE4EjgTNxI4EjgSFBETEhMSOBE4EjgTExEUEjcRORI4EhMSFBAVEDkROBMTEgAFIAABJ0sRAA0F"
+
+climate:
+  - platform: generic_thermostat
+    name: Bedroom Aircon
+    heater: switch.bedroom_aircon_power
+    target_sensor: sensor.pure_hot_cool_link_temperature
+    ac_mode: true
+    target_temp: 22
+    min_temp: 16
+    max_temp: 30
+    initial_hvac_mode: "off"
+    precision: 1.0
+
 homekit:
   filter:
     include_domains:
@@ -70,6 +90,7 @@ homekit:
       - person.nil
       - person.steve
       - input_boolean.in_a_meeting_nil
+      - climate.bedroom_aircon
     exclude_entities:
       - light.living_room_sofa
       - light.bedroom_bed

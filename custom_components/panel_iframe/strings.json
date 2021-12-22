@@ -1,0 +1,20 @@
+{
+    "config": {
+      "title": "Panel iframe",
+      "step": {
+        "user": {
+          "title": "Set iframe config",
+          "data": {
+            "id": "Panel ID (must be unique. Do not use 'lovelace')",
+            "title": "Sidebar Title",
+            "icon": "Icon",
+            "require_admin": "Require admin to see",
+            "url": "iframe URL"
+          }
+        }
+      },
+      "abort": {
+        "id_already_exists": "An iframe with that ID is already set up"
+      }
+    }
+  }

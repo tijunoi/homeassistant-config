@@ -21,6 +21,8 @@ google-assistant/service_account.json
 #Ignore logs, dbs and bkps
 *.log
 *.db
+*.db-shm
+*.db-wal
 *.bkp
 
 #Ignore tts folder that stores google translate mp3s
@@ -41,6 +43,9 @@ homebridge/*
 !homebridge/package.json
 !homebridge/startup.sh
 
+# swag
+swag/*
+
 #IDE settings
 .vscode
 .idea/*
@@ -56,3 +61,6 @@ homebridge/*
 
 # Duplicati config folder
 duplicati/*
+
+# Ignore docker .env secrets
+.env

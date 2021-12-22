@@ -1,0 +1,31 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Toyota Connected Services",
+        "description": "Please input your email and password for MyT below.",
+        "data": {
+          "email": "Email",
+          "password": "Password",
+          "region": "Region (Only Europe is supported right now)"
+        }
+      }
+    },
+    "error": {
+      "invalid_username": "Email must contain @.",
+      "region_not_supported": "Region is not supported.",
+      "invalid_auth": "Email/Password is incorrect.",
+      "invalid_locale": "Language code is not valid.",
+      "unknown": "Unexpected error."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "data": {
+          "use_liters": "Use liters (L/100 miles) instead of MPG. Only applicable if you car reports data in miles (Imperial unit system)."
+        }
+      }
+    }
+  }
+}

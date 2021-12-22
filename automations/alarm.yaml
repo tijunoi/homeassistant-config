@@ -48,7 +48,7 @@
       data:
         entity_id: media_player.all
         media_content_type: music
-        media_content_id: http://192.168.86.28:8084/security_alarm.mp3
+        media_content_id: http://192.168.86.45:8084/security_alarm.mp3
 
 - id: alarm_stop_playing_sound
   alias: 'Stop playing the alarm sound when disarmed or re-armed'

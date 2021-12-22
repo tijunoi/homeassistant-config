@@ -1,0 +1,31 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Toyota Connected Services",
+        "description": "Angiv venligst din email og adgangskode til MyT nedenfor.",
+        "data": {
+          "email": "Email",
+          "password": "Adgangskode",
+          "region": "Region (Kun Europa er understøttet lige nu)"
+        }
+      }
+    },
+    "error": {
+      "invalid_username": "Email skal indeholde @.",
+      "region_not_supported": "Region er ikke understøttet",
+      "invalid_auth": "Email/Adgangskode er forkert.",
+      "invalid_locale": "Landekode format er ikke korrekt.",
+      "unknown": "Uventet fejl."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "data": {
+          "use_liters": "Vis i liter (L/100 mil) i stedet for MPG. Gælder kun for biler der reportere deres data i mil."
+        }
+      }
+    }
+  }
+}

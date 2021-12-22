@@ -75,6 +75,7 @@ from .const import (
     ERR_ALREADY_DISARMED,
     ERR_ALREADY_STOPPED,
     ERR_CHALLENGE_NOT_SETUP,
+    ERR_FUNCTION_NOT_SUPPORTED,
     ERR_NO_AVAILABLE_CHANNEL,
     ERR_NOT_SUPPORTED,
     ERR_UNSUPPORTED_INPUT,
@@ -106,7 +107,8 @@ TRAIT_TRANSPORT_CONTROL = f"{PREFIX_TRAITS}TransportControl"
 TRAIT_MEDIA_STATE = f"{PREFIX_TRAITS}MediaState"
 TRAIT_CHANNEL = f"{PREFIX_TRAITS}Channel"
 TRAIT_LOCATOR = f"{PREFIX_TRAITS}Locator"
-TRAIT_ENERGY_STORAGE = f"{PREFIX_TRAITS}EnergyStorage"
+TRAIT_ENERGYSTORAGE = f"{PREFIX_TRAITS}EnergyStorage"
+TRAIT_SENSOR_STATE = f"{PREFIX_TRAITS}SensorState"
 
 PREFIX_COMMANDS = "action.devices.commands."
 COMMAND_ONOFF = f"{PREFIX_COMMANDS}OnOff"
@@ -146,9 +148,10 @@ COMMAND_MEDIA_SEEK_TO_POSITION = f"{PREFIX_COMMANDS}mediaSeekToPosition"
 COMMAND_MEDIA_SHUFFLE = f"{PREFIX_COMMANDS}mediaShuffle"
 COMMAND_MEDIA_STOP = f"{PREFIX_COMMANDS}mediaStop"
 COMMAND_REVERSE = f"{PREFIX_COMMANDS}Reverse"
-COMMAND_LOCATE = f"{PREFIX_COMMANDS}Locate"
 COMMAND_SET_HUMIDITY = f"{PREFIX_COMMANDS}SetHumidity"
 COMMAND_SELECT_CHANNEL = f"{PREFIX_COMMANDS}selectChannel"
+COMMAND_LOCATE = f"{PREFIX_COMMANDS}Locate"
+COMMAND_CHARGE = f"{PREFIX_COMMANDS}Charge"
 
 TRAITS = []
 
@@ -410,10 +413,11 @@ class ColorSettingTrait(_Trait):
 
     def query_attributes(self):
         """Return color temperature query attributes."""
-        color_modes = self.state.attributes.get(light.ATTR_SUPPORTED_COLOR_MODES)
+        color_mode = self.state.attributes.get(light.ATTR_COLOR_MODE)
+
         color = {}
 
-        if light.color_supported(color_modes):
+        if light.color_supported([color_mode]):
             color_hs = self.state.attributes.get(light.ATTR_HS_COLOR)
             brightness = self.state.attributes.get(light.ATTR_BRIGHTNESS, 1)
             if color_hs is not None:
@@ -423,7 +427,7 @@ class ColorSettingTrait(_Trait):
                     "value": brightness / 255,
                 }
 
-        if light.color_temp_supported(color_modes):
+        if light.color_temp_supported([color_mode]):
             temp = self.state.attributes.get(light.ATTR_COLOR_TEMP)
             # Some faulty integrations might put 0 in here, raising exception.
             if temp == 0:
@@ -571,6 +575,202 @@ class DockTrait(_Trait):
             blocking=True,
             context=data.context,
         )
+
+
+@register_trait
+class LocatorTrait(_Trait):
+    """Trait to offer locate functionality.
+
+    https://developers.google.com/actions/smarthome/traits/locator
+    """
+
+    name = TRAIT_LOCATOR
+    commands = [COMMAND_LOCATE]
+
+    @staticmethod
+    def supported(domain, features, device_class, _):
+        """Test if state is supported."""
+        return domain == vacuum.DOMAIN and features & vacuum.SUPPORT_LOCATE
+
+    def sync_attributes(self):
+        """Return locator attributes for a sync request."""
+        return {}
+
+    def query_attributes(self):
+        """Return locator query attributes."""
+        return {}
+
+    async def execute(self, command, data, params, challenge):
+        """Execute a locate command."""
+        if params.get("silence", False):
+            raise SmartHomeError(
+                ERR_FUNCTION_NOT_SUPPORTED,
+                "Silencing a Locate request is not yet supported",
+            )
+
+        await self.hass.services.async_call(
+            self.state.domain,
+            vacuum.SERVICE_LOCATE,
+            {ATTR_ENTITY_ID: self.state.entity_id},
+            blocking=True,
+            context=data.context,
+        )
+
+
+class EnergyStorageTrait(_Trait):
+    """Trait to offer EnergyStorage functionality.
+
+    https://developers.google.com/actions/smarthome/traits/energystorage
+    """
+
+    name = TRAIT_ENERGYSTORAGE
+    commands = (
+        []
+    )  # Could support START_CHARGING and STOP_CHARGING, but don't know for what
+
+    @staticmethod
+    def supported(domain, features, device_class, _):
+        """Test if state is supported."""
+        return domain == vacuum.DOMAIN and features & vacuum.SUPPORT_BATTERY
+
+    def sync_attributes(self):
+        """Return EnergyStorage attributes for a sync request."""
+        return {
+            "isRechargeable": True,
+            "queryOnlyEnergyStorage": True,
+        }
+
+    def query_attributes(self):
+        """Return EnergyStorage query attributes."""
+        battery_level = self.state.attributes.get(ATTR_BATTERY_LEVEL)
+        is_docked = self.state.state == vacuum.STATE_DOCKED
+        if battery_level == 100:
+            descriptive_capacity_remaining = "FULL"
+        elif 75 <= battery_level < 100:
+            descriptive_capacity_remaining = "HIGH"
+        elif 50 <= battery_level < 75:
+            descriptive_capacity_remaining = "MEDIUM"
+        elif 25 <= battery_level < 50:
+            descriptive_capacity_remaining = "LOW"
+        elif 0 <= battery_level < 25:
+            descriptive_capacity_remaining = "CRITICALLY_LOW"
+        return {
+            "descriptiveCapacityRemaining": descriptive_capacity_remaining,
+            "capacityRemaining": [{"rawValue": battery_level, "unit": "PERCENTAGE"}],
+            "capacityUntilFull": [
+                {"rawValue": 100 - battery_level, "unit": "PERCENTAGE"}
+            ],
+            "isCharging": is_docked and battery_level < 100,
+            "isPluggedIn": is_docked,
+        }
+
+
+@register_trait
+class VacuumModesTrait(_Trait):
+    """Trait to set modes for a vacuum entity.
+
+    https://developers.google.com/actions/smarthome/traits/modes
+    """
+
+    name = TRAIT_MODES
+    commands = [COMMAND_MODES]
+
+    SYNONYMS = {
+        "fan speed": [
+            "Fan speed",
+            "fan speed",
+            "speed",
+            "mode",
+            "vacuum mode",
+            "cleaning mode",
+            "clean mode",
+        ],
+        "Gentle": [
+            "mop",
+            "mopping",
+            "water",
+            "wet cleaning",
+            "wet",
+        ],  # TODO: refactor. This is hardcoded for roborock S5 gentle mode which is the mop mode.
+        "Silent": ["quiet", "silent"],
+        "Standard": ["balanced", "standard"],
+        "Medium": ["turbo"],
+        "Turbo": ["max", "maximum"],
+    }
+
+    @staticmethod
+    def supported(domain, features, device_class, _):
+        """Test if state is supported."""
+
+        return domain == vacuum.DOMAIN and (features & vacuum.SUPPORT_FAN_SPEED != 0)
+
+    def sync_attributes(self):
+        """Return mode attributes for a sync request."""
+
+        def _generate(name, settings):
+            mode = {
+                "name": name,
+                "name_values": [
+                    {"name_synonym": self.SYNONYMS.get(name, [name]), "lang": "en"}
+                ],
+                "settings": [],
+                "ordered": False,
+            }
+            for setting in settings:
+                mode["settings"].append(
+                    {
+                        "setting_name": setting,
+                        "setting_values": [
+                            {
+                                "setting_synonym": self.SYNONYMS.get(
+                                    setting, [setting]
+                                ),
+                                "lang": "en",
+                            }
+                        ],
+                    }
+                )
+            return mode
+
+        attrs = self.state.attributes
+        modes = []
+        if vacuum.ATTR_FAN_SPEED_LIST in attrs:
+            modes.append(_generate("fan speed", attrs[vacuum.ATTR_FAN_SPEED_LIST]))
+
+        payload = {"availableModes": modes}
+
+        return payload
+
+    def query_attributes(self):
+        """Return current modes."""
+        attrs = self.state.attributes
+        response = {}
+        mode_settings = {}
+
+        if vacuum.ATTR_FAN_SPEED_LIST in attrs:
+            mode_settings["fan speed"] = attrs.get(vacuum.ATTR_FAN_SPEED)
+
+        if mode_settings:
+            response["currentModeSettings"] = mode_settings
+
+        return response
+
+    async def execute(self, command, data, params, challenge):
+        """Execute an SetModes command."""
+        settings = params.get("updateModeSettings")
+        fan_speed = settings.get("fan speed")
+
+        if fan_speed:
+            await self.hass.services.async_call(
+                vacuum.DOMAIN,
+                vacuum.SERVICE_SET_FAN_SPEED,
+                {
+                    ATTR_ENTITY_ID: self.state.entity_id,
+                    vacuum.ATTR_FAN_SPEED: fan_speed,
+                },
+                blocking=True,
+                context=data.context,
+            )
 
 
 @register_trait
@@ -736,179 +936,6 @@ class StartStopTrait(_Trait):
         else:
             raise SmartHomeError(
                 ERR_NOT_SUPPORTED, f"Command {command} is not supported"
-            )
-
-
-@register_trait
-class LocatorTrait(_Trait):
-    """Trait to offer locating a device through a local feedback (vibration,
-    sound, light) on a device, such as a vacuum.
-
-    https://developers.google.com/assistant/smarthome/traits/locator
-    """
-
-    name = TRAIT_LOCATOR
-    commands = [COMMAND_LOCATE]
-
-    @staticmethod
-    def supported(domain, features, device_class, _):
-        """Test if state is supported."""
-        return domain == vacuum.DOMAIN and (features & vacuum.SUPPORT_LOCATE != 0)
-
-    def query_attributes(self):
-        return {}
-
-    def sync_attributes(self):
-        return {}
-
-    async def execute(self, command, data, params, challenge):
-        await self.hass.services.async_call(
-            self.state.domain,
-            vacuum.SERVICE_LOCATE,
-            {ATTR_ENTITY_ID: self.state.entity_id},
-            blocking=True,
-            context=data.context,
-        )
-        # TODO: return states: { generatedAlert: true} when figuring out how to return data
-
-
-@register_trait
-class EnergyStorageTrait(_Trait):
-    """Trait to represent battery capacity of a device, i.e. a vacuum"""
-
-    name = TRAIT_ENERGY_STORAGE
-    commands = (
-        []
-    )  # Could support START_CHARGING and STOP_CHARGING, but don't know for what
-
-    @staticmethod
-    def supported(domain, features, device_class, _):
-        """Test if state is supported."""
-        return domain == vacuum.DOMAIN and (features & vacuum.SUPPORT_BATTERY != 0)
-
-    def sync_attributes(self):
-        attributes = {"queryOnlyEnergyStorage": True, "isRechargeable": True}
-        return attributes
-
-    def query_attributes(self):
-        # Currently only supports percentages, but could support seconds, miles and kms
-        battery_level = self.state.attributes.get(ATTR_BATTERY_LEVEL)
-        is_docked = self.state.state == vacuum.STATE_DOCKED
-
-        return {
-            "isPluggedIn": is_docked,
-            "isCharging": is_docked and battery_level < 100,
-            "capacityRemaining": [{"unit": "PERCENTAGE", "rawValue": battery_level}],
-            # "capacityUntilFull": [
-            #    {"unit": "PERCENTAGE", "rawValue": 100 - battery_level}
-            # ],
-        }
-
-@register_trait
-class VacuumModesTrait(_Trait):
-    """Trait to set modes for a vacuum entity.
-
-    https://developers.google.com/actions/smarthome/traits/modes
-    """
-
-    name = TRAIT_MODES
-    commands = [COMMAND_MODES]
-
-    SYNONYMS = {
-        "fan speed": [
-            "Fan speed",
-            "fan speed",
-            "speed",
-            "mode",
-            "vacuum mode",
-            "cleaning mode",
-            "clean mode",
-        ],
-        "Gentle": [
-            "mop",
-            "mopping",
-            "water",
-            "wet cleaning",
-            "wet",
-        ],  # TODO: refactor. This is hardcoded for roborock S5 gentle mode which is the mop mode.
-        "Silent": ["quiet", "silent"],
-        "Standard": ["balanced", "standard"],
-        "Medium": ["turbo"],
-        "Turbo": ["max", "maximum"],
-    }
-
-    @staticmethod
-    def supported(domain, features, device_class, _):
-        """Test if state is supported."""
-
-        return domain == vacuum.DOMAIN and (features & vacuum.SUPPORT_FAN_SPEED != 0)
-
-    def sync_attributes(self):
-        """Return mode attributes for a sync request."""
-
-        def _generate(name, settings):
-            mode = {
-                "name": name,
-                "name_values": [
-                    {"name_synonym": self.SYNONYMS.get(name, [name]), "lang": "en"}
-                ],
-                "settings": [],
-                "ordered": False,
-            }
-            for setting in settings:
-                mode["settings"].append(
-                    {
-                        "setting_name": setting,
-                        "setting_values": [
-                            {
-                                "setting_synonym": self.SYNONYMS.get(
-                                    setting, [setting]
-                                ),
-                                "lang": "en",
-                            }
-                        ],
-                    }
-                )
-            return mode
-
-        attrs = self.state.attributes
-        modes = []
-        if vacuum.ATTR_FAN_SPEED_LIST in attrs:
-            modes.append(_generate("fan speed", attrs[vacuum.ATTR_FAN_SPEED_LIST]))
-
-        payload = {"availableModes": modes}
-
-        return payload
-
-    def query_attributes(self):
-        """Return current modes."""
-        attrs = self.state.attributes
-        response = {}
-        mode_settings = {}
-
-        if vacuum.ATTR_FAN_SPEED_LIST in attrs:
-            mode_settings["fan speed"] = attrs.get(vacuum.ATTR_FAN_SPEED)
-
-        if mode_settings:
-            response["currentModeSettings"] = mode_settings
-
-        return response
-
-    async def execute(self, command, data, params, challenge):
-        """Execute an SetModes command."""
-        settings = params.get("updateModeSettings")
-        fan_speed = settings.get("fan speed")
-
-        if fan_speed:
-            await self.hass.services.async_call(
-                vacuum.DOMAIN,
-                vacuum.SERVICE_SET_FAN_SPEED,
-                {
-                    ATTR_ENTITY_ID: self.state.entity_id,
-                    vacuum.ATTR_FAN_SPEED: fan_speed,
-                },
-                blocking=True,
-                context=data.context,
             )
 
 
@@ -1511,7 +1538,7 @@ class FanSpeedTrait(_Trait):
             )
 
         elif domain == climate.DOMAIN:
-            modes = self.state.attributes.get(climate.ATTR_FAN_MODES, [])
+            modes = self.state.attributes.get(climate.ATTR_FAN_MODES) or []
             for mode in modes:
                 speed = {
                     "speed_name": mode,
@@ -2408,3 +2435,57 @@ class ChannelTrait(_Trait):
             blocking=True,
             context=data.context,
         )
+
+
+@register_trait
+class SensorStateTrait(_Trait):
+    """Trait to get sensor state.
+
+    https://developers.google.com/actions/smarthome/traits/sensorstate
+    """
+
+    sensor_types = {
+        sensor.DEVICE_CLASS_AQI: ("AirQuality", "AQI"),
+        sensor.DEVICE_CLASS_CO: ("CarbonDioxideLevel", "PARTS_PER_MILLION"),
+        sensor.DEVICE_CLASS_CO2: ("CarbonMonoxideLevel", "PARTS_PER_MILLION"),
+        sensor.DEVICE_CLASS_PM25: ("PM2.5", "MICROGRAMS_PER_CUBIC_METER"),
+        sensor.DEVICE_CLASS_PM10: ("PM10", "MICROGRAMS_PER_CUBIC_METER"),
+        sensor.DEVICE_CLASS_VOLATILE_ORGANIC_COMPOUNDS: (
+            "VolatileOrganicCompounds",
+            "PARTS_PER_MILLION",
+        ),
+    }
+
+    name = TRAIT_SENSOR_STATE
+    commands = []
+
+    @classmethod
+    def supported(cls, domain, features, device_class, _):
+        """Test if state is supported."""
+        return (
+            domain == sensor.DOMAIN
+            and device_class in SensorStateTrait.sensor_types.keys()
+        )
+
+    def sync_attributes(self):
+        """Return attributes for a sync request."""
+        device_class = self.state.attributes.get(ATTR_DEVICE_CLASS)
+        data = self.sensor_types.get(device_class)
+        if data is not None:
+            return {
+                "sensorStatesSupported": {
+                    "name": data[0],
+                    "numericCapabilities": {"rawValueUnit": data[1]},
+                }
+            }
+
+    def query_attributes(self):
+        """Return the attributes of this trait for this entity."""
+        device_class = self.state.attributes.get(ATTR_DEVICE_CLASS)
+        data = self.sensor_types.get(device_class)
+        if data is not None:
+            return {
+                "currentSensorStateData": [
+                    {"name": data[0], "rawValue": self.state.state}
+                ]
+            }

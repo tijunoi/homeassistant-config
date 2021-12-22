@@ -13,8 +13,8 @@
     "issue_tracker": "https://github.com/DurgNomis-drol/ha_toyota/issues",
     "name": "Toyota Connected Services",
     "requirements": [
-        "mytoyota==0.6.2",
+        "mytoyota==0.7.5",
         "arrow"
     ],
-    "version": "v1.2.3"
+    "version": "1.2.6"
 }

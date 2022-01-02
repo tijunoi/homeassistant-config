@@ -2,7 +2,7 @@
   "private": true,
   "description": "This file keeps track of which plugins should be installed.",
   "dependencies": {
-    "homebridge-hue": "^0.13.30",
+    "homebridge-hue": "^0.13.32",
     "homebridge-nest": "^4.6.3",
     "homebridge-nuki": "^0.11.0",
     "homebridge-ring": "^9.23.0",

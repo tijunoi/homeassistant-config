@@ -200,18 +200,21 @@ input_select:
       - P4 (eco)
     icon: mdi:dishwasher
 
-sensor dishwasher_current_program_duration:
-  platform: template
-  sensors:
-    dishwasher_current_program_duration:
-      friendly_name: "Current DW program duration"
-      value_template: >
-        {% set mapper =
-          { 'P3': '01:14:00',
-            'P4 (eco)': '01:56:00' } %}
-        {% set state = states('input_select.dishwasher_programs') %}
-        {% set duration = mapper[state] if state in mapper %}
-        {{ duration }}
+template:
+  - sensor:
+      name: "Current DW program duration"
+      state: >
+          {% set mapper =
+            { 'P3': '01:14:00',
+              'P4 (eco)': '01:56:00' } %}
+          {% set state = states('input_select.dishwasher_programs') %}
+          {% set duration = mapper[state] if state in mapper %}
+          {{ duration }}
+      unique_id: dishwasher_current_program_duration
+
+sensor:
+  - platform: edata
+    debug: true
 
 logger:
   default: warn

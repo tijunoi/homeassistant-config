@@ -64,3 +64,5 @@ duplicati/*
 
 # Ignore docker .env secrets
 .env
+home-assistant.log.1
+home-assistant.log.fault

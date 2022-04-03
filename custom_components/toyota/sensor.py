@@ -1,8 +1,8 @@
 """Sensor platform for Toyota sensor integration."""
 import arrow
 
+from homeassistant.components.sensor import SensorDeviceClass
 from homeassistant.const import (
-    DEVICE_CLASS_TEMPERATURE,
     ENTITY_CATEGORY_DIAGNOSTIC,
     PERCENTAGE,
     STATE_UNAVAILABLE,
@@ -62,7 +62,7 @@ async def async_setup_entry(hass, config_entry, async_add_devices):
                 sensors.append(ToyotaRangeSensor(coordinator, index, "range"))
 
             if vehicle.energy.chargeinfo:
-                sensors.append(ToyotaEVSensor(coordinator, index, "EV battery"))
+                sensors.append(ToyotaEVSensor(coordinator, index, "EV battery status"))
 
             sensors.extend(
                 [
@@ -158,8 +158,9 @@ class ToyotaFuelRemainingSensor(ToyotaBaseEntity):
 
     @property
     def state(self) -> StateType:
-        """Return the state of the sensor."""
-        return self.coordinator.data[self.index].energy.level
+        """Return fuellevel/battery capacity of the vehicle."""
+        level = self.coordinator.data[self.index].energy.level
+        return round(level, 1) if level else None
 
 
 class ToyotaRangeSensor(ToyotaBaseEntity):
@@ -200,16 +201,16 @@ class ToyotaEVSensor(ToyotaBaseEntity):
 
         attribute = {
             "Start_time": self.coordinator.data[self.index].energy.chargeinfo.get(
-                "ChargeStartTime", None
+                "start_time", None
             ),
             "End_time": self.coordinator.data[self.index].energy.chargeinfo.get(
-                "ChargeEndTime", None
+                "end_time", None
             ),
             "Remaining_time": self.coordinator.data[self.index].energy.chargeinfo.get(
-                "RemainingChargeTime", None
+                "remaining_time", None
             ),
             "Remaining_amount": self.coordinator.data[self.index].energy.chargeinfo.get(
-                "ChargeRemainingAmount", None
+                "remaining_amount", None
             ),
         }
 
@@ -225,7 +226,7 @@ class ToyotaEVSensor(ToyotaBaseEntity):
 class ToyotaHVACSensor(ToyotaBaseEntity):
     """Class for hvac temperature sensor"""
 
-    _attr_device_class = DEVICE_CLASS_TEMPERATURE
+    _attr_device_class = SensorDeviceClass.TEMPERATURE
     _attr_native_unit_of_measurement = TEMP_CELSIUS
 
     @property
@@ -269,7 +270,7 @@ class ToyotaHVACSensor(ToyotaBaseEntity):
 class ToyotaTargetTemperatureSensor(ToyotaBaseEntity):
     """Class for hvac temperature sensor"""
 
-    _attr_device_class = DEVICE_CLASS_TEMPERATURE
+    _attr_device_class = SensorDeviceClass.TEMPERATURE
     _attr_native_unit_of_measurement = TEMP_CELSIUS
 
     @property

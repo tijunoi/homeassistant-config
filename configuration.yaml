@@ -167,7 +167,7 @@ media_player:
 homeassistant:
   name: Home
   customize: !include customize.yaml
-
+  external_url: !secret EXTERNAL_URL
 alarm_control_panel:
   - platform: manual
     name: Home Alarm
@@ -220,5 +220,6 @@ logger:
   default: warn
 
 group: !include groups.yaml
-automation: !include_dir_merge_list automations
+automation: !include automations.yaml
+automation split: !include_dir_merge_list ./automations
 script: !include scripts.yaml

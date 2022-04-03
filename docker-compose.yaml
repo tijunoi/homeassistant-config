@@ -37,7 +37,7 @@ services:
             - 443
         restart: unless-stopped
     authelia:
-        image: authelia/authelia:4.29.4
+        image: authelia/authelia:4.33.2
         container_name: authelia
         ports: 
             - 9091:9091
@@ -175,6 +175,29 @@ services:
             - UID=1000
             - GID=1000
         restart: unless-stopped
+    kuma:
+        container_name: kuma
+        image: louislam/uptime-kuma:1
+        restart: always
+        environment:
+            - UID=1000
+            - GUD=1000
+        volumes:
+            - /home/pi/kuma:/app/data
+        expose:
+            - 3001
+    duckdns:
+        image: lscr.io/linuxserver/duckdns
+        container_name: duckdns
+        environment:
+            - PUID=1000
+            - PGID=1000
+            - TZ=Europe/Madrid
+            - SUBDOMAINS=hoio
+            - FILE__TOKEN=/run/secrets/duckdns_token
+        restart: unless-stopped
+        secrets:
+            - duckdns_token
 secrets:
     google_pwd:
         file: ../.secrets/google_pwd.txt
@@ -182,3 +205,5 @@ secrets:
         file: ../.secrets/jwt.txt
     session:
         file: ../.secrets/session.txt
+    duckdns_token:
+        file: ../.secrets/duckdns_token.txt

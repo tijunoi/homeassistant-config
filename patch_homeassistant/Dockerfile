@@ -1,3 +1,3 @@
-ARG IMAGE=ghcr.io/home-assistant/raspberrypi4-homeassistant:2022.2.9
+ARG IMAGE=ghcr.io/home-assistant/raspberrypi4-homeassistant:2022.3.8
 FROM $IMAGE
 COPY homeassistant/ /usr/src/homeassistant/

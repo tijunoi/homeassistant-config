@@ -8,27 +8,21 @@ from libdyson import (
     DysonDevice,
     DysonPureCoolLink,
     DysonPureHumidifyCool,
+    DysonPurifierHumidifyCoolFormaldehyde,
 )
 from libdyson.const import MessageType
 
-from homeassistant.components.sensor import DEVICE_CLASS_BATTERY, SensorEntity
+from homeassistant.components.sensor import SensorDeviceClass, SensorEntity
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import (
     CONCENTRATION_MICROGRAMS_PER_CUBIC_METER,
     CONF_NAME,
-    DEVICE_CLASS_HUMIDITY,
-    DEVICE_CLASS_NITROGEN_DIOXIDE,
-    DEVICE_CLASS_PM1,
-    DEVICE_CLASS_PM10,
-    DEVICE_CLASS_PM25,
-    DEVICE_CLASS_TEMPERATURE,
-    DEVICE_CLASS_VOLATILE_ORGANIC_COMPOUNDS,
-    ENTITY_CATEGORY_DIAGNOSTIC,
     PERCENTAGE,
     TEMP_CELSIUS,
     TIME_HOURS,
 )
 from homeassistant.core import HomeAssistant
+from homeassistant.helpers.entity import EntityCategory
 from homeassistant.helpers.update_coordinator import (
     CoordinatorEntity,
     DataUpdateCoordinator,
@@ -78,7 +72,8 @@ async def async_setup_entry(
                         DysonHEPAFilterLifeSensor(device, name),
                     ]
                 )
-        if isinstance(device, DysonPureHumidifyCool):
+        if isinstance(device, DysonPureHumidifyCool) or isinstance(
+            device, DysonPurifierHumidifyCoolFormaldehyde):
             entities.append(DysonNextDeepCleanSensor(device, name))
     async_add_entities(entities)
 
@@ -123,7 +118,7 @@ class DysonBatterySensor(DysonSensor):
 
     _SENSOR_TYPE = "battery_level"
     _SENSOR_NAME = "Battery Level"
-    _attr_device_class = DEVICE_CLASS_BATTERY
+    _attr_device_class = SensorDeviceClass.BATTERY
     _attr_unit_of_measurement = PERCENTAGE
 
     @property
@@ -137,7 +132,7 @@ class DysonFilterLifeSensor(DysonSensor):
 
     _SENSOR_TYPE = "filter_life"
     _SENSOR_NAME = "Filter Life"
-    _attr_entity_category = ENTITY_CATEGORY_DIAGNOSTIC
+    _attr_entity_category = EntityCategory.DIAGNOSTIC
     _attr_icon = "mdi:filter-outline"
     _attr_unit_of_measurement = TIME_HOURS
 
@@ -152,7 +147,7 @@ class DysonCarbonFilterLifeSensor(DysonSensor):
 
     _SENSOR_TYPE = "carbon_filter_life"
     _SENSOR_NAME = "Carbon Filter Life"
-    _attr_entity_category = ENTITY_CATEGORY_DIAGNOSTIC
+    _attr_entity_category = EntityCategory.DIAGNOSTIC
     _attr_icon = "mdi:filter-outline"
     _attr_unit_of_measurement = PERCENTAGE
 
@@ -167,7 +162,7 @@ class DysonHEPAFilterLifeSensor(DysonSensor):
 
     _SENSOR_TYPE = "hepa_filter_life"
     _SENSOR_NAME = "HEPA Filter Life"
-    _attr_entity_category = ENTITY_CATEGORY_DIAGNOSTIC
+    _attr_entity_category = EntityCategory.DIAGNOSTIC
     _attr_icon = "mdi:filter-outline"
     _attr_unit_of_measurement = PERCENTAGE
 
@@ -182,7 +177,7 @@ class DysonCombinedFilterLifeSensor(DysonSensor):
 
     _SENSOR_TYPE = "combined_filter_life"
     _SENSOR_NAME = "Filter Life"
-    _attr_entity_category = ENTITY_CATEGORY_DIAGNOSTIC
+    _attr_entity_category = EntityCategory.DIAGNOSTIC
     _attr_icon = "mdi:filter-outline"
     _attr_unit_of_measurement = PERCENTAGE
 
@@ -197,7 +192,7 @@ class DysonNextDeepCleanSensor(DysonSensor):
 
     _SENSOR_TYPE = "next_deep_clean"
     _SENSOR_NAME = "Next Deep Clean"
-    _attr_entity_category = ENTITY_CATEGORY_DIAGNOSTIC
+    _attr_entity_category = EntityCategory.DIAGNOSTIC
     _attr_icon = "mdi:filter-outline"
     _attr_unit_of_measurement = TIME_HOURS
 
@@ -212,7 +207,7 @@ class DysonHumiditySensor(DysonSensorEnvironmental):
 
     _SENSOR_TYPE = "humidity"
     _SENSOR_NAME = "Humidity"
-    _attr_device_class = DEVICE_CLASS_HUMIDITY
+    _attr_device_class = SensorDeviceClass.HUMIDITY
     _attr_unit_of_measurement = PERCENTAGE
 
     @environmental_property
@@ -226,8 +221,8 @@ class DysonTemperatureSensor(DysonSensorEnvironmental):
 
     _SENSOR_TYPE = "temperature"
     _SENSOR_NAME = "Temperature"
-    _attr_device_class = DEVICE_CLASS_TEMPERATURE
-    _attr_unit_of_measurement = TEMP_CELSIUS
+    _attr_device_class = SensorDeviceClass.TEMPERATURE
+    native_unit_of_measurement = TEMP_CELSIUS
 
     @environmental_property
     def temperature_kelvin(self) -> int:
@@ -254,7 +249,7 @@ class DysonPM25Sensor(DysonSensorEnvironmental):
 
     _SENSOR_TYPE = "pm25"
     _SENSOR_NAME = "PM 2.5"
-    _attr_device_class = DEVICE_CLASS_PM25
+    _attr_device_class = SensorDeviceClass.PM25
     _attr_unit_of_measurement = CONCENTRATION_MICROGRAMS_PER_CUBIC_METER
 
     @environmental_property
@@ -268,7 +263,7 @@ class DysonPM10Sensor(DysonSensorEnvironmental):
 
     _SENSOR_TYPE = "pm10"
     _SENSOR_NAME = "PM 10"
-    _attr_device_class = DEVICE_CLASS_PM10
+    _attr_device_class = SensorDeviceClass.PM10
     _attr_unit_of_measurement = CONCENTRATION_MICROGRAMS_PER_CUBIC_METER
 
     @environmental_property
@@ -282,7 +277,7 @@ class DysonParticulatesSensor(DysonSensorEnvironmental):
 
     _SENSOR_TYPE = "pm1"
     _SENSOR_NAME = "Particulates"
-    _attr_device_class = DEVICE_CLASS_PM1
+    _attr_device_class = SensorDeviceClass.PM1
     _attr_unit_of_measurement = CONCENTRATION_MICROGRAMS_PER_CUBIC_METER
 
     @environmental_property
@@ -296,7 +291,7 @@ class DysonVOCSensor(DysonSensorEnvironmental):
 
     _SENSOR_TYPE = "voc"
     _SENSOR_NAME = "Volatile Organic Compounds"
-    _attr_device_class = DEVICE_CLASS_VOLATILE_ORGANIC_COMPOUNDS
+    _attr_device_class = SensorDeviceClass.VOLATILE_ORGANIC_COMPOUNDS
     _attr_unit_of_measurement = CONCENTRATION_MICROGRAMS_PER_CUBIC_METER
 
     @environmental_property
@@ -310,7 +305,7 @@ class DysonNO2Sensor(DysonSensorEnvironmental):
 
     _SENSOR_TYPE = "no2"
     _SENSOR_NAME = "Nitrogen Dioxide"
-    _attr_device_class = DEVICE_CLASS_NITROGEN_DIOXIDE
+    _attr_device_class = SensorDeviceClass.NITROGEN_DIOXIDE
     _attr_unit_of_measurement = CONCENTRATION_MICROGRAMS_PER_CUBIC_METER
 
     @environmental_property

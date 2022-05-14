@@ -23,6 +23,27 @@ services:
             - 443:443
             - 80:80 #optional
         restart: unless-stopped
+    wireguard:
+        image: lscr.io/linuxserver/wireguard:latest
+        container_name: wireguard
+        cap_add:
+          - NET_ADMIN
+          - SYS_MODULE
+        environment:
+          - PUID=1000
+          - PGID=1000
+          - TZ=Europe/Madrid
+          - SERVERURL=haum.cc #optional
+          - SERVERPORT=51820 #optional
+          - PEERS=ipad,nil_iphone,steve_iphone #optional
+          - PEERDNS=auto #optional
+          - LOG_CONFS=true #optional
+        volumes:
+          - /home/pi/wireguard:/config
+          - /lib/modules:/lib/modules
+        ports:
+          - 51820:51820/udp
+        restart: unless-stopped
     heimdall:
         image: ghcr.io/linuxserver/heimdall
         container_name: heimdall
@@ -61,6 +82,13 @@ services:
             context: patch_homeassistant/
         network_mode: host
         restart: always
+    scrypted:
+        image: koush/scrypted
+        container_name: scrypted
+        restart: unless-stopped
+        network_mode: host
+        volumes:
+            - '/home/pi/scrypted/volume:/server/volume'
     google-assistant-relay:
         container_name: assistant-relay
         image: 'tijunoi/rpi-assistant-relay'

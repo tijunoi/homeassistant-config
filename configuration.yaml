@@ -2,6 +2,8 @@
 # Configure a default setup of Home Assistant (frontend, api, etc)
 default_config:
 
+backup:
+
 frontend:
   themes: !include_dir_merge_named themes
 
@@ -202,15 +204,32 @@ input_select:
 
 template:
   - sensor:
-      name: "Current DW program duration"
-      state: >
-          {% set mapper =
-            { 'P3': '01:14:00',
-              'P4 (eco)': '01:56:00' } %}
-          {% set state = states('input_select.dishwasher_programs') %}
-          {% set duration = mapper[state] if state in mapper %}
-          {{ duration }}
-      unique_id: dishwasher_current_program_duration
+      - name: "Gas Price per m³"
+        state: "{{ states('input_number.gas_price_per_kwh')|float * states('input_number.kwh_to_m3_conversion_factor')|float }}"
+        device_class: monetary
+        unit_of_measurement: €/m³
+        unique_id: e12bf6e5-e4de-4b05-8cf9-c7c4c89c2fb9
+      - name: "Gas Consumption"
+        state: "{{ states('input_number.gas_reading') }}"
+        device_class: gas
+        state_class: total_increasing
+        unit_of_measurement: m³
+        unique_id: 0434f11d-82ea-469e-8fec-213de1a1d88a
+      - name: "Estimated Gas Bill"
+        state: "{{ states('input_number.gas_price_per_kwh')|float * states('input_number.kwh_to_m3_conversion_factor')|float }}"
+        device_class: monetary
+        unit_of_measurement: €/m³
+        unique_id: e12bf6e5-e4de-4b05-8cf9-c7c4c89c2fb9
+        state_class: total
+      - name: "Current DW program duration"
+        state: >
+            {% set mapper =
+              { 'P3': '01:14:00',
+                'P4 (eco)': '01:56:00' } %}
+            {% set state = states('input_select.dishwasher_programs') %}
+            {% set duration = mapper[state] if state in mapper %}
+            {{ duration }}
+        unique_id: dishwasher_current_program_duration
 
 sensor:
   - platform: edata

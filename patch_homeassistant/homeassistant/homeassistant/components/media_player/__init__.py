@@ -110,6 +110,26 @@ from .const import (  # noqa: F401
     SERVICE_SELECT_SOUND_MODE,
     SERVICE_SELECT_SOURCE,
     SERVICE_UNJOIN,
+    SUPPORT_BROWSE_MEDIA,
+    SUPPORT_CLEAR_PLAYLIST,
+    SUPPORT_GROUPING,
+    SUPPORT_HOMEKIT_REMOTE,
+    SUPPORT_NEXT_TRACK,
+    SUPPORT_PAUSE,
+    SUPPORT_PLAY,
+    SUPPORT_PLAY_MEDIA,
+    SUPPORT_PREVIOUS_TRACK,
+    SUPPORT_REPEAT_SET,
+    SUPPORT_SEEK,
+    SUPPORT_SELECT_SOUND_MODE,
+    SUPPORT_SELECT_SOURCE,
+    SUPPORT_SHUFFLE_SET,
+    SUPPORT_STOP,
+    SUPPORT_TURN_OFF,
+    SUPPORT_TURN_ON,
+    SUPPORT_VOLUME_MUTE,
+    SUPPORT_VOLUME_SET,
+    SUPPORT_VOLUME_STEP,
     MediaPlayerEntityFeature,
 )
 from .errors import BrowseError
@@ -397,7 +417,7 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
         SERVICE_MEDIA_HOMEKIT_SEND_REMOTE_KEY,
         MEDIA_PLAYER_SEND_REMOTE_KEY_SCHEMA,
         "async_homekit_send_remote_key",
-        [MediaPlayerEntityFeature.HOMEKIT_REMOTE],
+        [SUPPORT_HOMEKIT_REMOTE],
     )
 
     return True
@@ -876,7 +896,7 @@ class MediaPlayerEntity(Entity):
     @property
     def support_homekit_remote(self):
         """Boolean if supports sending keys from remote control"""
-        return bool(self.supported_features & MediaPlayerEntityFeature.HOMEKIT_REMOTE)
+        return bool(self.supported_features & SUPPORT_HOMEKIT_REMOTE)
 
     async def async_toggle(self):
         """Toggle the power on the media player."""

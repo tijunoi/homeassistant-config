@@ -43,6 +43,7 @@ notify:
     platform: group
     services:
       - service: mobile_app_nils_iphone_xs
+      - service: mobile_app_nil_s_iphone_14_pro
       - service: mobile_app_steves_iphone_12
 
 # Google Assistant relay commands

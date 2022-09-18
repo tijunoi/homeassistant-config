@@ -10,13 +10,22 @@
       entity_id: binary_sensor.bathroom_window
       to: 'on'
     - platform: state
+      entity_id: binary_sensor.kitchen_window
+      to: 'on'
+    - platform: state
       entity_id: binary_sensor.bedroom_balcony_door
       to: 'on'
     - platform: state
-      entity_id: binary_sensor.bedroom_left_window
+      entity_id: binary_sensor.office_balcony_door
       to: 'on'
     - platform: state
-      entity_id: binary_sensor.bedroom_right_window
+      entity_id: binary_sensor.dressing_room_window
+      to: 'on'
+    - platform: state
+      entity_id: binary_sensor.living_room_left_balcony_door
+      to: 'on'
+    - platform: state
+      entity_id: binary_sensor.living_room_right_balcony_door
       to: 'on'
   condition:
     - condition: state

@@ -12,7 +12,7 @@
     platform: homeassistant
     event: start
   action:
-    service: notify.mobile_app_nils_iphone_xs
+    service: notify.mobile_app_nil_s_iphone_14_pro
     data:
       message: "Home Assistant has been started"
       title: "Home Assistant started"

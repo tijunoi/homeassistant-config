@@ -1,8 +1,15 @@
 start_dishwasher_timer:
-  alias: "Start dishwasher timer"
+  alias: Start dishwasher timer
   sequence:
-      - service: timer.start
-        data:
-          entity_id: timer.dishwasher
-          duration: >
-            {{ states('sensor.dishwasher_current_program_duration')}}
+  - service: timer.start
+    data:
+      entity_id: timer.dishwasher
+      duration: '{{ states(''sensor.dishwasher_current_program_duration'')}}'
+prioritize_scopely_mac:
+  alias: Prioritize work Mac
+  sequence:
+  - service: googlewifi.prioritize
+    data:
+      entity_id: switch.bcn_00374_mac_10_macbook_pro
+      duration: 1
+  mode: single

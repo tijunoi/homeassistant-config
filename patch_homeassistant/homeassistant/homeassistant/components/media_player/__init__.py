@@ -426,12 +426,14 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
         elif value[ATTR_MEDIA_ENQUEUE] is True:
             value[ATTR_MEDIA_ENQUEUE] = MediaPlayerEnqueue.ADD
             _LOGGER.warning(
-                "Playing media with enqueue set to True is deprecated. Use 'add' instead"
+                "Playing media with enqueue set to True is deprecated. Use 'add'"
+                " instead"
             )
         elif value[ATTR_MEDIA_ENQUEUE] is False:
             value[ATTR_MEDIA_ENQUEUE] = MediaPlayerEnqueue.PLAY
             _LOGGER.warning(
-                "Playing media with enqueue set to False is deprecated. Use 'play' instead"
+                "Playing media with enqueue set to False is deprecated. Use 'play'"
+                " instead"
             )
 
         return value
@@ -493,7 +495,7 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 class MediaPlayerEntityDescription(EntityDescription):
     """A class that describes media player entities."""
 
-    device_class: MediaPlayerDeviceClass | str | None = None
+    device_class: MediaPlayerDeviceClass | None = None
 
 
 class MediaPlayerEntity(Entity):
@@ -504,7 +506,7 @@ class MediaPlayerEntity(Entity):
 
     _attr_app_id: str | None = None
     _attr_app_name: str | None = None
-    _attr_device_class: MediaPlayerDeviceClass | str | None
+    _attr_device_class: MediaPlayerDeviceClass | None
     _attr_group_members: list[str] | None = None
     _attr_is_volume_muted: bool | None = None
     _attr_media_album_artist: str | None = None
@@ -537,7 +539,7 @@ class MediaPlayerEntity(Entity):
 
     # Implement these for your media player
     @property
-    def device_class(self) -> MediaPlayerDeviceClass | str | None:
+    def device_class(self) -> MediaPlayerDeviceClass | None:
         """Return the class of this entity."""
         if hasattr(self, "_attr_device_class"):
             return self._attr_device_class

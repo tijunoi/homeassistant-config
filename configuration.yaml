@@ -31,12 +31,6 @@ tts:
 #     - device_id: !secret DYSON_DEVICE_ID
 #       device_ip: !secret DYSON_DEVICE_IP
 
-nest:
-  client_id: !secret NEST_SDM_CLIENT_ID
-  client_secret: !secret NEST_SDM_CLIENT_SECRET
-  project_id: !secret NEST_SDM_PROJECT_ID
-  subscriber_id: !secret NEST_SDM_SUBSCRIBER_ID
-
 # Notification groups
 notify:
   - name: iphones
@@ -97,16 +91,24 @@ homekit:
     include_entities:
       - person.nil
       - person.steve
-      - input_boolean.in_a_meeting_nil
       - climate.bedroom_aircon
     exclude_entities:
-      - light.living_room_sofa
+      - light.room_bathroom
+      - light.bathroom
+      - light.room_bedroom
       - light.bedroom_bed
-      - light.small
-      - light.living_room_table
-      - light.christmas_balcony
+      - light.room_christmas_tree
       - light.christmas_tree
+      - light.room_office
       - light.office
+      - light.desk_lightstrip
+      - light.room_entrance
+      - light.dressing_room
+      - light.room_dressing_room
+      - light.room_kitchen
+      - light.room_living_room
+      - light.small
+      - light.small_2
       - media_player.philipstv
       - light.on_off_plug_1
       - light.configuration_tool_2

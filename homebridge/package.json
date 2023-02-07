@@ -2,10 +2,10 @@
   "private": true,
   "description": "This file keeps track of which plugins should be installed.",
   "dependencies": {
-    "homebridge-hue": "^0.13.32",
-    "homebridge-nest": "^4.6.3",
-    "homebridge-nuki": "^0.11.0",
-    "homebridge-ring": "^9.23.0",
-    "homebridge-videodoorbell": "^0.3.2"
+    "homebridge": "^1.5.0",
+    "homebridge-nest": "^4.6.9",
+    "homebridge-nuki": "^0.11.1",
+    "homebridge-ring": "11.2.1",
+    "homebridge-deconz": "0.0.22"
   }
 }

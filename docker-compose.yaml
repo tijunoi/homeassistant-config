@@ -61,7 +61,7 @@ services:
             - 443
         restart: unless-stopped
     authelia:
-        image: authelia/authelia:4.35.5
+        image: authelia/authelia:4.37.5
         container_name: authelia
         ports: 
             - 9091:9091

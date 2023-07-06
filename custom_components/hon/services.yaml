@@ -1,0 +1,701 @@
+turn_on_oven:
+  name: Turn on the oven
+  description: Start a oven program
+
+  fields:
+    device:
+      name: Oven
+      description: Haier Oven
+      required: true
+      advanced: false
+      selector:
+        device:
+          manufacturer: haier
+
+    temperature:
+      name: Temperature
+      description: Temperature for the program
+      required: true
+      advanced: false
+      selector:
+        number:
+          min: 50
+          max: 240
+          step: 1
+          unit_of_measurement: "ºC"
+          mode: slider
+
+    preheat:
+      name: Preheat
+      description: Preheat the oven before start
+      required: false
+      advanced: false
+      selector:
+        boolean:
+
+    program:
+      name: Program
+      description: Program mode for oven
+      required: true
+      selector:
+        select:
+          options:
+            - label: Convectional
+              value: "5"
+            - label: Taylor Bake
+              value: "10"
+            - label: Bottom + fan
+              value: "4"
+            - label: Botton
+              value: "3"
+            - label: Convection + fan
+              value: "6"
+            - label: Soft+
+              value: "54"
+            - label: Multi-level
+              value: "23"
+
+    duration:
+      name: Program duration
+      description: Duration, in minutes, of program
+      required: false
+      advanced: false
+      selector:
+        number:
+          min: 0
+          max: 600
+          step: 1
+          unit_of_measurement: "min"
+          mode: slider
+
+    start:
+      name: Start time
+      description: Time when the program will start.
+      required: false
+      selector:
+        datetime:
+
+    end:
+      name: End time
+      description: Time when the program will be finish. You need set duration too
+      required: false
+      selector:
+        datetime:
+
+turn_off_oven:
+  name: Turn off the oven
+  description: Turn off the oven
+  fields:
+    device:
+      name: Oven
+      description: Haier Oven
+      required: true
+      advanced: false
+      selector:
+        device:
+          manufacturer: haier
+
+climate_set_sleep_mode:
+  name: Set climate sleep mode
+  description: Set climate sleep mode
+  target:
+    entity:
+      domain: climate
+  fields:
+    sleep_mode:
+      name: Sleep Mode
+      description: Sleep Mode value
+      required: true
+      advanced: false
+      selector:
+        boolean:
+
+climate_set_echo_mode:
+  name: Set climate echo mode
+  description: Do you want your unit to do BIP at each command ?
+  target:
+    entity:
+      domain: climate
+  fields:
+    echo_mode:
+      name: Echo Mode
+      description: True means BIP, False is silent
+      required: true
+      advanced: false
+      selector:
+        boolean:
+
+climate_set_screen_display:
+  name: Set climate screen display
+  description: Do you want your unit to display current temperature all the time?
+  target:
+    entity:
+      domain: climate
+  fields:
+    screen_display:
+      name: Screen display
+      description: True means visible, False is hidden
+      required: true
+      advanced: false
+      selector:
+        boolean:
+
+climate_set_rapid_mode:
+  name: Set climate rapid mode
+  description: Activate rapid mode?
+  target:
+    entity:
+      domain: climate
+  fields:
+    rapid_mode:
+      name: Rapid mode
+      description: True means Yes, False is no (obvious)
+      required: true
+      advanced: false
+      selector:
+        boolean:
+
+climate_set_silent_mode:
+  name: Set climate silent mode
+  description: Activate silent mode?
+  target:
+    entity:
+      domain: climate
+  fields:
+    silent_mode:
+      name: Silent mode
+      description: True means Yes, False is no (obvious)
+      required: true
+      advanced: false
+      selector:
+        boolean:
+
+climate_set_wind_direction_vertical:
+  name: Set wind direction vertical
+  description: Set wind direction vertical
+  target:
+    entity:
+      domain: climate
+  fields:
+    value:
+      name: Wind direction vertical
+      description: Direction can be from "Very low" to "Very high". "Auto" means swing
+      required: true
+      advanced: false
+      selector:
+        select:
+          options:
+            - label: Auto
+              value: "8"
+            - label: Very low
+              value: "7"
+            - label: Low
+              value: "6"
+            - label: Middle
+              value: "5"
+            - label: High
+              value: "4"
+            - label: Very high
+              value: "2"
+            - label: Health high
+              value: "3"
+            - label: Health low
+              value: "1"
+
+climate_set_wind_direction_horizontal:
+  name: Set wind direction horizontal
+  description: Set wind direction horizontal
+  target:
+    entity:
+      domain: climate
+  fields:
+    value:
+      name: Wind direction horizontal
+      description: Direction can be from "Far left" to "Far right". "Auto" means swing
+      required: true
+      advanced: false
+      selector:
+        select:
+          options:
+            - label: Auto
+              value: "7"
+            - label: Far left
+              value: "3"
+            - label: Left
+              value: "4"
+            - label: Middle
+              value: "0"
+            - label: Right
+              value: "5"
+            - label: Far right
+              value: "6"
+
+#climate_set_wind_direction:
+#  name: Set wind direction
+#  description: Set wind direction horizontal & vertical
+#  target:
+#    entity:
+#      domain: climate
+#  fields:
+#    horizontal:
+#      name: Wind direction horizontal
+#      description: From 0 (VERY_LOW) to 6 (VERY_HIGH). 7 = AUTO
+#      required: true
+#      advanced: false
+#      selector:
+#        number:
+#          min: 0
+#          max: 7
+#          step: 1
+#          mode: slider
+#    vertical:
+#      name: Wind direction vertical
+#      description: From 2 (VERY_LOW) to 7 (VERY_HIGH). 8 = AUTO
+#      required: true
+#      advanced: false
+#      selector:
+#        number:
+#          min: 2
+#          max: 8
+#          step: 1
+#          mode: slider
+
+climate_set_eco_pilot_mode:
+  name: Set Eco Pilot mode
+  description: Set Eco Pilot mode
+  target:
+    entity:
+      domain: climate
+  fields:
+    value:
+      name: Eco Pilot mode
+      description: Eco Pilot can be set to either "Avoid" or "Follow" person in the room. To disable Eco Pilot mode set it to "Off".
+      required: true
+      advanced: false
+      selector:
+        select:
+          options:
+            - label: "Off"
+              value: "0"
+            - label: "Avoid"
+              value: "1"
+            - label: "Follow"
+              value: "2"
+
+turn_on_dishwasher:
+  name: Turn on the dishwasher
+  description: Start a dishwasher program
+  fields:
+    device:
+      name: Dishwasher
+      description: Haier Dishwasher
+      required: true
+      advanced: false
+      selector:
+        device:
+          manufacturer: haier
+    program:
+      name: Program
+      description: Program mode for dishwasher
+      required: true
+      selector:
+        select:
+          options:
+            - label: Strong & Fast
+              value: "3"
+            - label: Eco 45ºC
+              value: "8"
+            - label: Cristal
+              value: "9"
+            - label: Class A 59' 65ºC
+              value: "10"
+            - label: Fast 29' 50ºC
+              value: "11"
+            - label: Rinse
+              value: "12"
+            - label: Crystal 45ºC
+              value: "13"
+            - label: Auto Univerlsal 65-75ºC
+              value: "14"
+            - label: Auto Universal 50-60ºC
+              value: "15"
+            - label: Auto Sensor
+              value: "16"
+            - label: Ultra Silence 55ºC
+              value: "17"
+            - label: Breakfast
+              value: "21"
+            - label: Sanitizing Cycle
+              value: "22"
+            - label: Baby Care
+              value: "23"
+            - label: Hygiene+ 75ºC
+              value: "24"
+    start:
+      name: Start time
+      description: Time when the program will start.
+      required: false
+      selector:
+        datetime:
+    end:
+      name: End time
+      description: Time when the program will be finish. You need set duration too
+      required: false
+      selector:
+        datetime:
+    extra_dry:
+      name: Extra Dry
+      description: True means Yes, False is no (obvious)
+      required: true
+      advanced: false
+      selector:
+        boolean:
+    open_door:
+      name: Open door
+      description: True means Yes, False is no (obvious)
+      required: true
+      advanced: false
+      selector:
+        boolean:
+    half_load:
+      name: Half load
+      description: True means Yes, False is no (obvious)
+      required: true
+      advanced: false
+      selector:
+        boolean:
+
+turn_on_washingmachine:
+  name: start the washing machine program
+  description: Start ta program with chosen options
+
+  fields:
+    device:
+      name: Washing Machine
+      description: Haier Washing Machine
+      required: true
+      advanced: false
+      selector:
+        device:
+          manufacturer: haier
+
+    end:
+      name: End time
+      description: Time when the program will be finished
+      required: false
+      selector:
+        datetime:
+
+    temp:
+      name: Washing Program Temperature
+      description: Set the program temperature (30° by default)
+      required: false
+      advanced: false
+      default: "30°"
+      selector:
+        select:
+          options:
+            - label: "20°"
+              value: "20"
+            - label: "30°"
+              value: "30"
+            - label: "40°"
+              value: "40"
+            - label: "60°"
+              value: "60"
+            - label: "90°"
+              value: "90"
+            - label: " "
+              value: "40"
+
+    autoSoftenerStatus:
+      name: Keep Fresh
+      description: Active the keep fresh option (deactivated by default)
+      required: false
+      advanced: false
+      default: "No"
+      selector:
+        select:
+          options:
+            - label: "Yes"
+              value: "1"
+            - label: "No"
+              value: "0"
+
+    rinseIterations:
+      name: Number of rinse cycle
+      description: Set the number of rinse cycle (2 by default)
+      required: false
+      advanced: false
+      default: "2"
+      selector:
+        number:
+          min: 1
+          max: 4
+          step: 1
+          mode: slider
+
+    spinSpeed:
+      name: Spin Speed
+      description: Set the program SpinSpeed (400 by default)
+      required: false
+      advanced: false
+      default: "400 rpm"
+      selector:
+        select:
+          options:
+            - label: "min"
+              value: "400"
+            - label: "400 rpm"
+              value: "400"
+            - label: "800 rpm"
+              value: "800"
+            - label: "1000 rpm"
+              value: "1000"
+            - label: "1200 rpm"
+              value: "1200"
+            - label: "1400 rpm"
+              value: "1400"
+
+    mainWashTime:
+      name: Washing Program cleaning duration
+      description: Set the cleaning phase duration (15 minutes by default)
+      required: false
+      advanced: false
+      default: "15 min"
+      selector:
+        select:
+          options:
+            - label: "5 min"
+              value: "5"
+            - label: "10 min"
+              value: "10"
+            - label: "15 min"
+              value: "15"
+            - label: "20 min"
+              value: "20"
+
+turn_off_washingmachine:
+  name: Stop the current program
+  description: Stop the current program
+  fields:
+    device:
+      name: Washing Machine
+      description: Haier Washing Machine
+      required: true
+      advanced: false
+      selector:
+        device:
+          manufacturer: haier
+
+turn_off_purifier:
+  name: Turn off the Air Purifier
+  description: Turn off Air Purifier
+  fields:
+    device:
+      name: Purifier
+      description: Hoover Air Purifier
+      required: true
+      advanced: false
+      selector:
+        device:
+          manufacturer: hoover
+
+turn_on_purifier:
+  name: Turn on the Air Purifier
+  description: Turn on Air Purifier
+  fields:
+    device:
+      name: Purifier
+      description: Hoover Air Purifier
+      required: true
+      advanced: false
+      selector:
+        device:
+          manufacturer: hoover
+
+set_auto_mode_purifier:
+  name: Set Air Purifier in Auto Mode
+  description: Set Air Purifier in Auto Mode
+  fields:
+    device:
+      name: Purifier
+      description: Hoover Air Purifier
+      required: true
+      advanced: false
+      selector:
+        device:
+          manufacturer: hoover
+
+set_sleep_mode_purifier:
+  name: Set Air Purifier in Sleep Mode
+  description: Set Air Purifier in Sleep Mode
+  fields:
+    device:
+      name: Purifier
+      description: Hoover Air Purifier
+      required: true
+      advanced: false
+      selector:
+        device:
+          manufacturer: hoover
+
+set_max_mode_purifier:
+  name: Set Air Purifier in Max Mode
+  description: Set Air Purifier in Max Mode
+  fields:
+    device:
+      name: Purifier
+      description: Hoover Air Purifier
+      required: true
+      advanced: false
+      selector:
+        device:
+          manufacturer: hoover
+
+###########################################################################
+# Generic services
+
+turn_off:
+  name: Turn OFF
+  description: Turn OFF any registered hOn device
+  fields:
+    device:
+      description: The hOn device
+      required: true
+      advanced: false
+      selector:
+        device:
+          integration: hon
+
+set_mode:
+  name: Set MODE
+  description: Select the mode of the hOn device
+  fields:
+    device:
+      description: The hOn device
+      required: true
+      advanced: false
+      selector:
+        device:
+          integration: hon
+    mode:
+      name: Mode
+      description: The mode (1 to 10) depending on device type
+      required: true
+      advanced: false
+      selector:
+        text:
+          type: number
+
+turn_light_on:
+  name: Turn on Light
+  description: "Turn ON the light on hOn device"
+  fields:
+    device:
+      description: The hOn device
+      required: true
+      advanced: false
+      selector:
+        device:
+          integration: hon
+          entity:
+            domain: binary_sensor
+            device_class: light
+
+turn_light_off:
+  name: Turn off Light
+  description: "Turn OFF the light"
+  fields:
+    device:
+      description: The hOn device
+      required: true
+      advanced: false
+      selector:
+        device:
+          integration: hon
+          entity:
+            domain: binary_sensor
+            device_class: light
+
+send_custom_request:
+  name: Send custom request
+  description: "send any parameters to the hOn device"
+  fields:
+    device:
+      description: The hOn device
+      required: true
+      advanced: false
+      selector:
+        device:
+          integration: hon
+    parameters:
+      description: 'List of parameters to send to the device. To turn OFF: {"onOffStatus": "0", "machMode": "1"}. Default command is for a Climate '
+      default: '{"specialMode":"0","heatAccumulationStatus":"0","echoStatus":"0","healthMode":"0","tempSel":"21.00","humidificationStatus":"0","tempUnit":"0","humiditySel":"30","pmvStatus":"0","screenDisplayStatus":"1","windDirectionVertical":"5","lightStatus":"0","energySavingStatus":"0","lockStatus":"0","machMode":"1","windDirectionHorizontal":"0","freshAirStatus":"0","pm2p5CleaningStatus":"0","windSpeed":"5","ch2oCleaningStatus":"0","electricHeatingStatus":"0","onOffStatus":1,"energySavePeriod":"15","intelligenceStatus":"0","halfDegreeSettingStatus":"0","rapidMode":"0","operationName":"grSetDAC","silentSleepStatus":"0","voiceSignStatus":"0","voiceStatus":"0","muteStatus":"0","10degreeHeatingStatus":"0","windSensingStatus":"0","selfCleaning56Status":"0","humanSensingStatus":"0","selfCleaningStatus":"0"}'
+      required: true
+      advanced: false
+      selector:
+        text:
+
+climate_turn_health_mode_on:
+  name: Turn on health mode
+  description: "Turn ON the climate health mode"
+  fields:
+    device:
+      description: The hOn climate device
+      required: true
+      advanced: false
+      selector:
+        device:
+          integration: hon
+
+climate_turn_health_mode_off:
+  name: Turn off health mode
+  description: "Turn OFF the climate health mode"
+  fields:
+    device:
+      description: The hOn climate device
+      required: true
+      advanced: false
+      selector:
+        device:
+          integration: hon
+
+start_program:
+  name: Start a program of a hOn device
+  description: You can get all the details to start a program by clicking on the button inside the device
+  target:
+    entity:
+      integration: hon
+  fields:
+    program:
+      name: Program
+      description: The name of the program to launch
+      required: true
+      advanced: false
+      selector:
+        text:
+    parameters:
+      name: Parameters
+      description: List of parameters and values to launch the program
+      default: "{}"
+      required: true
+      advanced: false
+      selector:
+        text:
+
+update_settings:
+  name: Update any settings of a hOn device
+  description: You can get all the details to start a program by clicking on the button inside the device
+  target:
+    entity:
+      integration: hon
+  fields:
+    parameters:
+      name: Parameters
+      description: List of parameters and values needed to update a settings
+      default: "{}"
+      required: true
+      advanced: false
+      selector:
+        text:

@@ -2,9 +2,10 @@
   "private": true,
   "description": "This file keeps track of which plugins should be installed.",
   "dependencies": {
+    "homebridge": "^1.6.1",
+    "homebridge-deconz": "0.0.22",
     "homebridge-nest": "^4.6.9",
     "homebridge-nuki": "^0.11.1",
-    "homebridge-ring": "11.7.1",
-    "homebridge-deconz": "0.0.22"
+    "homebridge-ring": "11.7.1"
   }
 }

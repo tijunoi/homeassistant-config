@@ -1,0 +1,64 @@
+{
+    "config": {
+        "step": {
+            "user": {
+                "description": "Please enter your hOn credentials",
+                "data": {
+                    "email": "Email Address",
+                    "password": "Password"
+                }
+            }
+        },
+        "error": {
+            "auth_error": "Your login attempt has failed. Make sure the username and password are correct."
+        }
+    },
+    "entity": {
+        "select": {
+            "ac_machmode": {
+                "name" : "Mode",
+                "state": {
+                    "0": "Auto",
+                    "1": "Cool",
+                    "2": "Dry",
+                    "4": "Heat",
+                    "6": "Fan only"
+                }
+            },
+            "ac_winddirectionvertical": {
+                "name" : "Wind direction vertical",
+                "state": {
+                    "1": "Health high",
+                    "2": "Very high",
+                    "3": "Health low",
+                    "4": "High",
+                    "5": "Middle",
+                    "6": "Low",
+                    "7": "Very low",
+                    "8": "Auto"
+                }
+            },
+            "ac_winddirectionhorizontal": {
+                "name" : "Wind direction horizontal",
+                "state": {
+                    "0": "Middle",
+                    "3": "Far left",
+                    "4": "Left",
+                    "5": "Right",
+                    "6": "Far right",
+                    "7": "Auto"
+                }
+            },
+            "program": {
+                "name" : "Program"
+            },
+            "windspeed": {
+                "name" : "Wind speed"
+            },
+            "lockstatus" : {
+                "name" : "lockStatuslockStatus"
+            }
+        }
+        
+    }
+}

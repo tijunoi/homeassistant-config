@@ -14,3 +14,12 @@
       entity_id: media_player.living_room_display
       dashboard_path: ipad-dashboard
   mode: single
+- id: '1683998026475'
+  alias: Entrance Motion Lights
+  description: ''
+  use_blueprint:
+    path: homeassistant/motion_light.yaml
+    input:
+      motion_entity: binary_sensor.entrance_motion
+      light_target:
+        area_id: a10e00371bf64611a80b9bf5e73a0b38

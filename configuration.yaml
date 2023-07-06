@@ -91,7 +91,8 @@ homekit:
     include_entities:
       - person.nil
       - person.steve
-      - climate.bedroom_aircon
+      - climate.office_aircon
+      - climate.living_room_aircon
     exclude_entities:
       - light.room_bathroom
       - light.bathroom

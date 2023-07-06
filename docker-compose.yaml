@@ -16,6 +16,7 @@ services:
             - VALIDATION=dns
             - CERTPROVIDER=zerossl
             - DNSPLUGIN=cloudflare
+            - PROPAGATION=30
             - EMAIL="${EMAIL}"
             - DOCKER_MODS=ghcr.io/linuxserver/mods:swag-crowdsec
             - CROWDSEC_API_KEY=${CROWDSEC_API_KEY}

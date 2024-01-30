@@ -29,6 +29,7 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import (  # noqa: F401
     ATTR_COMMAND,
     SERVICE_MEDIA_HOMEKIT_SEND_REMOTE_KEY,
+    ATTR_ENTITY_PICTURE,
     SERVICE_MEDIA_NEXT_TRACK,
     SERVICE_MEDIA_PAUSE,
     SERVICE_MEDIA_PLAY,
@@ -497,6 +498,17 @@ class MediaPlayerEntityDescription(EntityDescription):
 
 class MediaPlayerEntity(Entity):
     """ABC for media player entities."""
+
+    _entity_component_unrecorded_attributes = frozenset(
+        {
+            ATTR_ENTITY_PICTURE_LOCAL,
+            ATTR_ENTITY_PICTURE,
+            ATTR_INPUT_SOURCE_LIST,
+            ATTR_MEDIA_POSITION_UPDATED_AT,
+            ATTR_MEDIA_POSITION,
+            ATTR_SOUND_MODE_LIST,
+        }
+    )
 
     entity_description: MediaPlayerEntityDescription
     _access_token: str | None = None

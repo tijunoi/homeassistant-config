@@ -2095,9 +2095,7 @@ class ModesTrait(_Trait):
         elif self.state.domain == media_player.DOMAIN:
             if media_player.ATTR_SOUND_MODE_LIST in attrs:
                 mode_settings["sound mode"] = attrs.get(media_player.ATTR_SOUND_MODE)
-        elif self.state.domain == input_select.DOMAIN:
-            mode_settings["option"] = self.state.state
-        elif self.state.domain == select.DOMAIN:
+        elif self.state.domain in (input_select.DOMAIN, select.DOMAIN):
             mode_settings["option"] = self.state.state
         elif self.state.domain == humidifier.DOMAIN:
             if ATTR_MODE in attrs:
@@ -2861,10 +2859,9 @@ class SensorStateTrait(_Trait):
     name = TRAIT_SENSOR_STATE
     commands: list[str] = []
 
-    def _air_quality_description_for_aqi(self, aqi):
-        if aqi is None or aqi.isnumeric() is False:
+    def _air_quality_description_for_aqi(self, aqi: float | None) -> str:
+        if aqi is None or aqi < 0:
             return "unknown"
-        aqi = int(aqi)
         if aqi <= 50:
             return "healthy"
         if aqi <= 100:
@@ -2919,11 +2916,17 @@ class SensorStateTrait(_Trait):
         if device_class is None or data is None:
             return {}
 
-        sensor_data = {"name": data[0], "rawValue": self.state.state}
+        try:
+            value = float(self.state.state)
+        except ValueError:
+            value = None
+        if self.state.state == STATE_UNKNOWN:
+            value = None
+        sensor_data = {"name": data[0], "rawValue": value}
 
         if device_class == sensor.SensorDeviceClass.AQI:
             sensor_data["currentSensorState"] = self._air_quality_description_for_aqi(
-                self.state.state
+                value
             )
 
         return {"currentSensorStateData": [sensor_data]}
